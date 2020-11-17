@@ -1,9 +1,9 @@
-package com.ayserjamshidi.retailscrape.SearchResultItem;
+package com.ayserjamshidi.retailscrape.searchitem;
 
 import org.openqa.selenium.WebElement;
 
-public class BestBuyItem extends WebItem {
-	public BestBuyItem(WebElement element) {
+public class BestBuyItemTemplate extends ItemTemplate {
+	public BestBuyItemTemplate(WebElement element) {
 		super();
 	}
 
@@ -81,6 +81,11 @@ public class BestBuyItem extends WebItem {
 		}
 
 		this.shippingPrice = null;
+		return false;
+	}
+
+	@Override
+	public boolean setLink(WebElement element) {
 		return false;
 	}
 

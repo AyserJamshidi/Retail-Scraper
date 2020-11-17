@@ -1,12 +1,12 @@
-package com.ayserjamshidi.retailscrape.SearchResultItem;
+package com.ayserjamshidi.retailscrape.searchitem;
 
 import org.openqa.selenium.WebElement;
 
-public abstract class WebItem {
+public abstract class ItemTemplate {
 
-	public String imageSrc, rating, listingName, promotion, priceBeforeDiscount, currentPrice, shippingPrice;
+	public String imageSrc, rating, listingName, promotion, priceBeforeDiscount, currentPrice, shippingPrice, link;
 
-	public WebItem() {
+	public ItemTemplate() {
 		imageSrc = null;
 		rating = null;
 		listingName = null;
@@ -14,6 +14,7 @@ public abstract class WebItem {
 		priceBeforeDiscount = null;
 		currentPrice = null;
 		shippingPrice = null;
+		link = null;
 	}
 
 //	public WebItem(WebElement element) {
@@ -39,6 +40,8 @@ public abstract class WebItem {
 	public abstract boolean setPriceCurrent(WebElement element);
 
 	public abstract boolean setPriceShipping(WebElement element);
+
+	public abstract boolean setLink(WebElement element);
 
 	public abstract String toString();
 }

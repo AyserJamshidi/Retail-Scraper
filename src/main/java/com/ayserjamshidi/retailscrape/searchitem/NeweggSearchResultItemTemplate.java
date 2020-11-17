@@ -1,19 +1,20 @@
-package com.ayserjamshidi.retailscrape.SearchResultItem;
+package com.ayserjamshidi.retailscrape.searchitem;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
-public class NeweggSearchResultItem extends WebItem {
+public class NeweggSearchResultItemTemplate extends ItemTemplate {
 
 	//System.out.println(element.findElement(By.xpath("div[@class='featured-box cloumnsize1']")));
 
-	public NeweggSearchResultItem(WebElement element) {
+	public NeweggSearchResultItemTemplate(WebElement element) {
 		super(); // Ensure all variables are initialized to null
 		final WebElement itemDetails = element.findElement(By.className("item-info"));
 		final WebElement itemPricing = element.findElement(By.className("item-action"));
 
 		setImageSrc(element.findElement(By.cssSelector(".item-img img")));
-		setItemRating(itemDetails.findElement(By.className("item-rating")));
+		setLink(element.findElement(By.className("item-img")));
+		//setItemRating(itemDetails.findElement(By.className("item-rating")));
 		setListingName(itemDetails.findElement(By.className("item-title")));
 
 		/*
@@ -112,9 +113,21 @@ public class NeweggSearchResultItem extends WebItem {
 		return false;
 	}
 
+	@Override
+	public boolean setLink(WebElement element) {
+		if (element != null) {
+			this.link = element.getAttribute("href");
+			return true;
+		}
+
+		this.link = null;
+		return false;
+	}
+
 	public String toString() {
 
 		return "Image Link: " + this.imageSrc +
+				"\nProduct Link: " + this.link +
 				"\nRating: " + this.rating +
 				"\nListing Name: " + this.listingName +
 				"\nPromotion Thing: " + this.promotion +
