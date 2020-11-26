@@ -1,60 +1,86 @@
 package com.ayserjamshidi.retailscrape.website;
 
-import com.ayserjamshidi.retailscrape.searchitem.NeweggSearchResultItemTemplate;
+import com.ayserjamshidi.retailscrape.DiscordChannel;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 
 import java.awt.*;
 import java.net.URI;
-import java.util.List;
 
-public class Newegg extends WebsiteTemplate implements Runnable {
+public class Newegg extends WebItem {
+
+	boolean isCombo;
+	By addToCartBy, imageSrcBy, itemTitleBy;
+
+	public Newegg(String threadTitle, String pageUrl) {
+		super(); // Initialize WebDriver
+		this.threadTitle = threadTitle;
+		this.pageUrl = pageUrl;
+
+		driver.get(this.pageUrl);
+
+		isCombo = this.pageUrl.toLowerCase().contains("combodeal");
+		imageSrcBy = isCombo ? By.id("mainSlide_0") : By.className("product-view-img-original");
+		itemTitleBy = By.className(isCombo ? "wrapper" : "product-title");
+		addToCartBy = By.className(isCombo ? "atnPrimary" : "product-buy");
+	}
 
 	@Override
 	public void run() {
+		System.out.println("Initializing " + this.threadTitle + "...");
 
-	}
-
-	/*public void run(String searchTitle, final String searchUrl) {
-		System.out.println("Initializing " + searchTitle + "...");
-		HtmlUnitDriver driver = new HtmlUnitDriver(false);
+//		System.setProperty("webdriver.edge.driver", "src/main/drivers/msedgedriver.exe");
+		//driver = new EdgeDriver();
 
 		while (true) {
-			driver.get(searchUrl);
-//			driver.get("https://www.newegg.com/p/pl?N=100007709%20601357282&PageSize=96");
-
-			List<WebElement> test = driver.findElementsByClassName("item-container");
-
-			for (WebElement currentItem : test) {
-				NeweggSearchResultItemTemplate testyItem = new NeweggSearchResultItemTemplate(currentItem);
-
-				if (!testyItem.promotion.equals("OUT OF STOCK")) {
-					try {
-						Desktop.getDesktop().browse(new URI(testyItem.link.replaceAll(" ", "%20")));
-						System.out.println("Found " + testyItem.listingName);
-						System.out.println("Stopping, rerun me if you want to find more items.");
-						System.exit(0);
-					} catch (Exception e) {
-						System.out.println("Error occurred while trying to open " + testyItem.listingName + "\n\n" + e);
-					}
-				} else {
-					System.out.println("[" +searchTitle + "] " + testyItem.listingName + " - OOS, skipping...");
-				}
-			}
-
 			try {
-				Thread.sleep(3000);
-			} catch (InterruptedException e) {
+				WebElement thing = getFirstElement(addToCartBy);
+
+				if (thing != null)
+					if (thing.getText().toLowerCase().contains("add to cart")) { // In stock!
+						System.out.println("Found!");
+
+						discordAnnouncement(DiscordChannel.MAIN_CHANNEL);
+
+						Desktop.getDesktop().browse(new URI(pageUrl.replaceAll(" ", "%20")));
+						sleep(60000 * 5);
+//					thing.findElement(By.className("btn-primary")).click();
+					} else {
+						System.out.println(this.threadTitle + " is OOS.  We found \"" + thing.getText() + "\"");
+					}
+			} catch (Exception e) {
+				System.out.println("error occurred for item " + this.threadTitle + ":");
 				e.printStackTrace();
+				System.exit(-1);
 			}
+
+			driver.navigate().refresh();
+//			driver.get(this.url); // Re re-get the URL instead of refreshing because sometimes newegg will redirect us to bot-verification.
+
+			sleep(3000);
 		}
-	}*/
+
+//		driver.close();
+	}
 
 	@Override
-	public boolean outOfStock(WebElement currentItem) {
-		WebElement itemStock = currentItem.findElement(By.className("item-promo"));
+	public void discordAnnouncement(DiscordChannel channel) {
+		WebElement imgSrcElement = getFirstElement(imageSrcBy);
+		WebElement titleElement = getFirstElement(itemTitleBy);
 
-		return itemStock.getText().toLowerCase().contains("out of stock");
+		if (imgSrcElement != null)
+			imageSrc = imgSrcElement.getAttribute("src");
+
+		if (titleElement != null)
+			threadTitle = titleElement.getText();
+
+		price = driver.findElement(By.className(isCombo ? "current" : "price-current")).getText().replace("Now: ", "");
+//		shippingCost = this.getFirstelement(By.className(""));
+
+		// Try/catch this because not every item/combo has promotions and Selenium has no checks before finding elements.
+		WebElement testy = this.getFirstElement(By.className(isCombo ? "promo" : "product-promo"));
+		promotion = (testy != null) ? testy.getText() : null;
+
+		super.discordAnnouncement(channel);
 	}
 }
