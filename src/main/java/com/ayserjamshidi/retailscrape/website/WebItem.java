@@ -30,8 +30,6 @@ public abstract class WebItem implements Runnable {
 
 	public void discordAnnouncement(DiscordChannel channel) {
 		try {
-//			DiscordWebhook webhook = new DiscordWebhook("https://discord.com/api/webhooks/774850994286624768/-4obrF_fFMdKvsOfJNLMyPa8e2bCa1ggw3X2Rt_QCNhYwhaIl6JBTTYS1Ho22-u5Sl_l");
-//			DiscordWebhook webhook = new DiscordWebhook("https://discord.com/api/webhooks/780002736581378088/w9doWBCicgG6Bgj_tsfevNym4QwMcJQ9Kl8g85JA0yuPxGwrCh-mR9d2Po0oek0xjajc");
 			DiscordWebhook webhook = new DiscordWebhook(channel.webhookUrl);
 			webhook.setAvatarUrl("https://www.parcl.com/files/blog/8%20Online%20Stores%20with%20Cheap%20Tech%20Goods/newegg-logo.png");
 			webhook.setUsername("Newegg");
@@ -65,7 +63,7 @@ public abstract class WebItem implements Runnable {
 
 			messageObject.setUrl(this.pageUrl);
 
-			if (!this.promotion.equals("null"))
+			if (this.promotion != null && this.promotion.length() > 0)
 				messageObject.setFooter("Promotion: " + this.promotion, null);
 
 			webhook.addEmbed(messageObject);
@@ -76,7 +74,7 @@ public abstract class WebItem implements Runnable {
 	}
 
 	public WebElement getFirstElement(By searchType) {
-		List<WebElement> thingy = driver.findElements(searchType);
-		return thingy.size() > 0 ? thingy.get(0) : null;
+		List<WebElement> foundElements = this.driver.findElements(searchType);
+		return foundElements.size() > 0 ? foundElements.get(0) : null;
 	}
 }
