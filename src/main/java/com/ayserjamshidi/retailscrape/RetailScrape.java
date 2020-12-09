@@ -1,61 +1,62 @@
 package com.ayserjamshidi.retailscrape;
 
-import com.ayserjamshidi.retailscrape.addons.DiscordWebhook;
-import com.ayserjamshidi.retailscrape.website.Newegg;
+import com.ayserjamshidi.retailscrape.addons.discord.DiscordChannel;
+import com.ayserjamshidi.retailscrape.addons.discord.announcing.DiscordSenderTemplate;
+import com.ayserjamshidi.retailscrape.searchresults.NeweggSearch;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class RetailScrape {
+
+	final static int MIN_WAIT_TIME = 10, MAX_WAIT_TIME = 15;
+	public static int increaseMe = 0;
+
 	public static void main(String[] args) throws InterruptedException {
-		System.out.println("Initializing main thread...");
-		System.out.println("Starting main loop.");
+		// Disable warnings at beginning
+		java.util.logging.Logger.getLogger("com.gargoylesoftware.htmlunit").setLevel(java.util.logging.Level.OFF);
+		java.util.logging.Logger.getLogger("org.apache.http").setLevel(java.util.logging.Level.OFF);
 
-		Newegg[] itemList = {
-//				new Newegg("AMD Ryzen 5 5600X 6-Core 3.7 GHz Socket AM4 65W 100-100000065BOX Desktop Processor", // 5600x
-//						"https://www.newegg.com/amd-ryzen-5-5600x/p/N82E16819113666"),
-//				new Newegg("AMD Ryzen 5 5600X 3.7 GHz, OLOy WarHawk RGB 16GB (2 x 8GB) DDR4 3000 (PC4 24000) Desktop Memory",
-//						"https://www.newegg.com/Product/ComboDealDetails?ItemList=Combo.4207495"),
-//				new Newegg("AMD Ryzen 5 5600X 3.7 GHz Desktop Processor, Crucial Ballistix RGB 16GB (2 x 8GB) DDR4 3600 Desktop Memory",
-//						"https://www.newegg.com/Product/ComboDealDetails?ItemList=Combo.4199040"),
-//				new Newegg("AMD Ryzen 5 5600X 3.7 GHz Desktop Processor, OLOy 8GB DDR4 3600 Desktop Memory",
-//						"https://www.newegg.com/Product/ComboDealDetails?ItemList=Combo.4199041"),
-//				new Newegg("AMD Ryzen 5 5600X 3.7 GHz Socket AM4 100-100000065BOX Desktop Processor + WD Black 2TB",
-//						"https://www.newegg.com/Product/ComboDealDetails?ItemList=Combo.4199103"),
-//				new Newegg("AMD Ryzen 5 5600X 3.7 GHz CPU, OLOy 16GB (2 x 8GB) 288-Pin DDR4 3200 (PC4 25600) Desktop Memory",
-//						"https://www.newegg.com/Product/ComboDealDetails?ItemList=Combo.4202091"),
-//				new Newegg("ASUS TUF Gaming NVIDIA GeForce RTX 3080", // 3080
-//						"https://www.newegg.com/asus-geforce-rtx-3080-tuf-rtx3080-10g-gaming/p/N82E16814126453"),
-//				new Newegg("ASUS ROG Strix GeForce RTX 3080",
-//						"https://www.newegg.com/asus-geforce-rtx-3080-rog-strix-rtx3080-o10g-gaming/p/N82E16814126457"),
-//				new Newegg("ASUS TUF Gaming GeForce RTX 3080",
-//						"https://www.newegg.com/asus-geforce-rtx-3080-tuf-rtx3080-o10g-gaming/p/N82E16814126452"),
-				new Newegg("AMD Ryzen 9 5950X", // 5950x
-						"https://www.newegg.com/amd-ryzen-9-5950x/p/N82E16819113663"),
-				new Newegg("GIGABYTE B550 AORUS MASTER Motherboard, AMD Ryzen 9 5950X Processor",
-						"https://www.newegg.com/Product/ComboDealDetails?ItemList=Combo.4207303"),
-				new Newegg("AMD Ryzen 9 5950X Processor, MSI MPG X570 GAMING PRO CARBON WIFI ATX Gaming Motherboard",
-						"https://www.newegg.com/Product/ComboDealDetails?ItemList=Combo.4207303"),
-				new Newegg("AMD Ryzen 9 5950X 3.4GHz Socket AM4 Desktop Processor + Seagate 16TB Exos Enterprise HDD",
-						"https://www.newegg.com/Product/ComboDealDetails?ItemList=Combo.4199825"),
-				new Newegg("GIGABYTE X570 AORUS ELITE Motherboard, AMD Ryzen 9 5950X Processor",
-						"https://www.newegg.com/Product/ComboDealDetails?ItemList=Combo.4207317"),
-				new Newegg("AMD Ryzen 9 5950X 3.4 GHz Socket AM4 100-100000059WOF Desktop Processor + Seagate FireCuda 520 M.2 2280 2TB PCIe Gen4 x4, NVMe 1.3 3D TLC Internal Solid State Drive (SSD)",
-						"https://www.newegg.com/Product/ComboDealDetails?ItemList=Combo.4199061"),
-//				new Newegg("ASUS ROG MAXIMUS XII HERO (WI-FI) LGA 1200 (Intel 10th Gen) Intel Z490 (WiFi 6) SATA 6Gb/s ATX Intel Motherboard, Intel Core i7-10700K Processor", "https://www.newegg.com/Product/ComboDealDetails?ItemList=Combo.4205283")
+		System.out.println("Creating Newegg search list...");
+		NeweggSearch[] itemSearchList = {
+
+				// Nvidia GPUs
+				new NeweggSearch("Nvidia 3090 - Newegg USA", DiscordChannel.NVIDIA_3090_USA, MIN_WAIT_TIME, MAX_WAIT_TIME,
+						"https://www.newegg.com/p/pl?d=RTX+3090&N=8000%208000%20100006662&PageSize=96"),
+				new NeweggSearch("Nvidia 3080 - Newegg USA", DiscordChannel.NVIDIA_3080_USA, MIN_WAIT_TIME, MAX_WAIT_TIME,
+						"https://www.newegg.com/p/pl?d=RTX+3080&N=8000%208000%20100006662&PageSize=96"),
+				new NeweggSearch("Nvidia 3070 - Newegg USA", DiscordChannel.NVIDIA_3070_USA, MIN_WAIT_TIME, MAX_WAIT_TIME,
+						"https://www.newegg.com/p/pl?d=RTX+3070&N=8000%208000%20100006662&PageSize=96"),
+				new NeweggSearch("Nvidia 3060ti - Newegg USA", DiscordChannel.NVIDIA_3060TI_USA, MIN_WAIT_TIME, MAX_WAIT_TIME,
+						"https://www.newegg.com/p/pl?d=RTX+3060+Ti&N=8000%208000%20100006662&PageSize=96"),
+
+				// AMD GPUs
+				new NeweggSearch("AMD 6900xt - Newegg USA", DiscordChannel.AMD_RX6900XT_USA, MIN_WAIT_TIME, MAX_WAIT_TIME,
+						"https://www.newegg.com/p/pl?d=6900xt&N=8000%20100006662&PageSize=96"),
+				new NeweggSearch("AMD 6800xt - Newegg USA", DiscordChannel.AMD_RX6800XT_USA, MIN_WAIT_TIME, MAX_WAIT_TIME,
+						"https://www.newegg.com/p/pl?d=6800xt&N=8000%20100006662&PageSize=96"),
+				new NeweggSearch("AMD 6800 - Newegg USA", DiscordChannel.AMD_RX6800_USA, MIN_WAIT_TIME, MAX_WAIT_TIME,
+						"https://www.newegg.com/p/pl?d=rx6800+-xt&N=8000%20100006662&PageSize=96"),
+
+				// AMD CPUs
+				new NeweggSearch("AMD 5950x - Newegg USA", DiscordChannel.AMD_5950x_USA, MIN_WAIT_TIME, MAX_WAIT_TIME,
+						"https://www.newegg.com/p/pl?d=100-100000059WOF&N=100006676%204814%208000&PageSize=96"),
+				new NeweggSearch("AMD 5900x - Newegg USA", DiscordChannel.AMD_5900x_USA, MIN_WAIT_TIME, MAX_WAIT_TIME,
+						"https://www.newegg.com/p/pl?d=100-100000061WOF&N=100006676%204814%208000&PageSize=96"),
+				new NeweggSearch("AMD 5800x - Newegg USA", DiscordChannel.AMD_5800x_USA, MIN_WAIT_TIME, MAX_WAIT_TIME,
+						"https://www.newegg.com/p/pl?d=100-100000063WOF&N=100006676%204814%208000&PageSize=96"),
+				new NeweggSearch("AMD 5600x - Newegg USA", DiscordChannel.AMD_5600x_USA, MIN_WAIT_TIME, MAX_WAIT_TIME,
+						"https://www.newegg.com/p/pl?d=100-100000065BOX&N=100006676%204814%208000&PageSize=96"),
 		};
-//				"https://www.newegg.com/p/pl?d=asus+3080&PageSize=96&N=100007709&isdeptsrh=1");
 
+		System.out.println("Initializing main loop...");
 		List<Thread> threadList = new ArrayList<>();
 
-		for (Newegg curItem : itemList) {
+		for (NeweggSearch curItem : itemSearchList) {
 			Thread currentThread = new Thread(curItem);
 
 			currentThread.start();
 			threadList.add(currentThread);
-//			Thread.sleep(2000);
-
 			System.out.println("Started thread for " + curItem.threadTitle);
 		}
 
@@ -72,6 +73,7 @@ public class RetailScrape {
 			if (!keepLooping)
 				break;
 
+			//noinspection BusyWait
 			Thread.sleep(2000);
 		}
 

@@ -1,48 +1,57 @@
 package com.ayserjamshidi.retailscrape.searchresults;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.Dimension;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
 
-public abstract class WebSearchItem {
+import java.util.List;
 
-	public String imageSrc, rating, listingName, promotion, priceBeforeDiscount, currentPrice, shippingPrice, link;
+public class WebSearchItem implements Runnable {
 
-//	public ItemTemplate() {
-//		imageSrc = "null";
-//		rating = "null";
-//		listingName = "null";
-//		promotion = "null";
-//		priceBeforeDiscount = "null";
-//		currentPrice = "null";
-//		shippingPrice = "null";
-//		link = "null";
-//	}
 
-//	public WebItem(WebElement element) {
-//		setImageSrc(element.findElement(By.className("item-img")));
-//		setItemRating(element.findElement(By.className("item-rating")));
-//		setListingName(element.findElement(By.className("item-title")));
-//		setInStockThing(element.findElement(By.className("item-promo")));
-//		setPriceWas(element.findElement(By.className("price-was")));
-//		setPriceCurrent(element.findElement(By.className("price-current")));
-//		setPriceShip(element.findElement(By.className("price-ship")));
-//	}
+	ChromeDriver driver;
+//	HtmlUnitDriver driver;
+	String imageSrc, rating, listingName, promotion, priceBeforeDiscount, currentPrice, shippingPrice;
 
-	public abstract void setImageSrc(By searchType) throws NoSuchElementException;
+	public String threadTitle, pageUrl;
+	WebElement mainElement;
 
-	public abstract void setItemRating(By searchType);
+	public WebSearchItem(String threadTitle, String pageUrl) {
+		if (pageUrl.length() <= 0 || threadTitle.length() <= 0)
+			return;
 
-	public abstract void setListingName(By searchType);
+		this.threadTitle = threadTitle;
+		this.pageUrl = pageUrl;
 
-	public abstract void setPromotion(By searchType);
+		System.setProperty("webdriver.chrome.driver", "src/main/drivers/chromedriver.exe");
 
-	public abstract void setPriceBeforeDiscount(By searchType);
+		driver = new ChromeDriver();
+//		driver = new HtmlUnitDriver();
 
-	public abstract void setPriceCurrent(By searchType);
+		driver.get(this.pageUrl);
+		driver.manage().window().setSize(new Dimension(300, 300));
+	}
 
-	public abstract void setPriceShipping(By searchType);
+	@Override
+	public void run() {
+		try {
+			throw new Exception("The thread " + threadTitle + " has no loop override.");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
-	public abstract void setLink(By searchType);
+	public void sleep(int ms) {
+		try {
+			Thread.sleep(ms);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
 
-	public abstract String toString();
+	public WebElement getFirstElement(WebElement element, By searchType) {
+		List<WebElement> foundElements = element.findElements(searchType);
+		return foundElements.size() > 0 ? foundElements.get(0) : null;
+	}
 }

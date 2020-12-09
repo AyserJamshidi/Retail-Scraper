@@ -1,6 +1,6 @@
 package com.ayserjamshidi.retailscrape.website;
 
-import com.ayserjamshidi.retailscrape.DiscordChannel;
+import com.ayserjamshidi.retailscrape.addons.discord.DiscordChannel;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
@@ -9,12 +9,14 @@ import java.net.URI;
 
 public class Newegg extends WebItem {
 
+	DiscordChannel discordChannel;
 	boolean isCombo;
 	By addToCartBy, imageSrcBy, itemTitleBy;
 
-	public Newegg(String threadTitle, String pageUrl) {
+	public Newegg(String threadTitle, DiscordChannel discordChannel, String pageUrl) {
 		super(); // Initialize WebDriver
 		this.threadTitle = threadTitle;
+		this.discordChannel = discordChannel;
 		this.pageUrl = pageUrl;
 
 		driver.get(this.pageUrl);
@@ -40,7 +42,7 @@ public class Newegg extends WebItem {
 					if (thing.getText().toLowerCase().contains("add to cart")) { // In stock!
 						System.out.println("Found!");
 
-						discordAnnouncement(DiscordChannel.MAIN_CHANNEL);
+						discordAnnouncement();
 
 						Desktop.getDesktop().browse(new URI(pageUrl.replaceAll(" ", "%20")));
 						sleep(60000 * 5);
@@ -63,8 +65,7 @@ public class Newegg extends WebItem {
 //		driver.close();
 	}
 
-	@Override
-	public void discordAnnouncement(DiscordChannel channel) {
+	public void discordAnnouncement() {
 		WebElement imgSrcElement = getFirstElement(imageSrcBy);
 		WebElement titleElement = getFirstElement(itemTitleBy);
 
@@ -81,6 +82,6 @@ public class Newegg extends WebItem {
 		WebElement testy = this.getFirstElement(By.className(isCombo ? "promo" : "product-promo"));
 		promotion = (testy != null) ? testy.getText() : null;
 
-		super.discordAnnouncement(channel);
+		super.discordAnnouncement(discordChannel);
 	}
 }

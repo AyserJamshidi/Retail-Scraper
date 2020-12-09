@@ -1,10 +1,10 @@
 package com.ayserjamshidi.retailscrape.website;
 
-import com.ayserjamshidi.retailscrape.DiscordChannel;
-import com.ayserjamshidi.retailscrape.addons.DiscordWebhook;
+import com.ayserjamshidi.retailscrape.addons.discord.DiscordChannel;
+import com.ayserjamshidi.retailscrape.addons.discord.DiscordWebhook;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.htmlunit.HtmlUnitDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
 
 import java.awt.*;
 import java.util.List;
@@ -12,12 +12,16 @@ import java.util.List;
 public abstract class WebItem implements Runnable {
 
 	//	WebDriver driver;
-	HtmlUnitDriver driver;
+	 ChromeDriver driver;
+//	HtmlUnitDriver driver;
+
+	//	HtmlUnitDriver driver;
 	public String threadTitle;
 	String pageUrl, price, shippingCost, promotion, imageSrc;
 
 	public WebItem() {
-		driver = new HtmlUnitDriver();
+//		driver = new HtmlUnitDriver();
+		driver = new ChromeDriver();
 	}
 
 	public void sleep(int ms) {
@@ -74,7 +78,7 @@ public abstract class WebItem implements Runnable {
 	}
 
 	public WebElement getFirstElement(By searchType) {
-		List<WebElement> foundElements = this.driver.findElements(searchType);
+		List<WebElement> foundElements = driver.findElements(searchType);
 		return foundElements.size() > 0 ? foundElements.get(0) : null;
 	}
 }
