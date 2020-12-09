@@ -52,10 +52,7 @@ public class NeweggSearch extends WebSearchItem {
 							new DiscordSenderTemplate().announce(discordChannel, currentItem);
 
 							hMap.put(currentItem.itemName, System.currentTimeMillis());
-//							sleep(60000 * 5);
-						} /*else {
-							System.out.println("Skipping " + currentItem.itemName);
-						}*/
+						}
 					} else {
 						System.out.println("Skipping Ad...");
 					}
@@ -66,12 +63,21 @@ public class NeweggSearch extends WebSearchItem {
 
 			System.out.println(threadTitle + " - Sleeping for " + sleepInterval + " milliseconds.");
 
-			try {
-				driver.manage().deleteAllCookies();
-				driver.get(pageUrl);
-			} catch (Exception ex) {
-				new DiscordSenderTemplate().error("Thread " + threadTitle + " had an error while attempting to load its assigned URL.");
-//				new DiscordSenderTemplate().error("Some weird error occurred for thread " + threadTitle + " while trying to load the page + " + pageUrl);
+			boolean shouldRetry = true;
+			int retryAttempts = 0;
+
+			while (shouldRetry) {
+				try {
+					retryAttempts++;
+					driver.manage().deleteAllCookies();
+					driver.get(pageUrl);
+					shouldRetry = false;
+				} catch (Exception ex) {
+					if (retryAttempts > 10) {
+						new DiscordSenderTemplate().error("Thread " + threadTitle + " had an error while attempting to load an assigned URL.");
+						shouldRetry = false;
+					}
+				}
 			}
 
 			RetailScrape.increaseMe++;
