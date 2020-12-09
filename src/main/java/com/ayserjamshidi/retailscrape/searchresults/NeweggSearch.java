@@ -85,7 +85,8 @@ public class NeweggSearch extends WebSearchItem {
 
 			if (!driver.getPageSource().toLowerCase().contains("today's best deal") && (System.currentTimeMillis() - lastComplaint) >= (2 * 60000)) {
 				lastComplaint = System.currentTimeMillis();
-				new DiscordSenderTemplate().error("Run #" + RetailScrape.increaseMe + " - " + threadTitle + " - We landed on a page that wasn't the one we intended to go!\\nLanded on: " + driver.getCurrentUrl());
+				new DiscordSenderTemplate().error("Run #" + RetailScrape.increaseMe + " - " + threadTitle + " - We landed on a page that wasn't the one we intended to go!" +
+						"\\nLanded on - title: " + driver.getTitle() + ", URL: " + driver.getCurrentUrl());
 			}
 		}
 	}
