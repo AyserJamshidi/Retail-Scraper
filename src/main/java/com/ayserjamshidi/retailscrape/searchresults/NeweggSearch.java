@@ -70,6 +70,7 @@ public class NeweggSearch extends WebSearchItem {
 				driver.manage().deleteAllCookies();
 				driver.get(pageUrl);
 			} catch (Exception ex) {
+				new DiscordSenderTemplate().error("Thread " + threadTitle + " had an error while attempting to load its assigned URL.");
 //				new DiscordSenderTemplate().error("Some weird error occurred for thread " + threadTitle + " while trying to load the page + " + pageUrl);
 			}
 
@@ -78,8 +79,7 @@ public class NeweggSearch extends WebSearchItem {
 
 			if (!driver.getPageSource().toLowerCase().contains("today's best deal") && (System.currentTimeMillis() - lastComplaint) >= (2 * 60000)) {
 				lastComplaint = System.currentTimeMillis();
-				new DiscordSenderTemplate().error("Run #" + RetailScrape.increaseMe + " - " + threadTitle + " - something happened while trying to load the page " + pageUrl);
-//				sleep(1 * 60000);
+				new DiscordSenderTemplate().error("Run #" + RetailScrape.increaseMe + " - " + threadTitle + " - We landed on a page that wasn't the one we intended to go!\\nLanded on: " + driver.getCurrentUrl());
 			}
 		}
 	}

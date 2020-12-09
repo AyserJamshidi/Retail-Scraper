@@ -67,8 +67,10 @@ public class RetailScrape {
 				if (curThread.isAlive()) {
 					keepLooping = true;
 					break;
-				} else
-					threadList.remove(curThread);
+				} else {
+					new DiscordSenderTemplate().error("Thread " + curThread.getName() + " is not alive! Restart the program!");
+//					threadList.remove(curThread);
+				}
 
 			if (!keepLooping)
 				break;
