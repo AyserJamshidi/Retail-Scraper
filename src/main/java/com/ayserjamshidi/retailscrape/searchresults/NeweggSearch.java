@@ -67,12 +67,12 @@ public class NeweggSearch extends WebSearchItem {
 			boolean shouldRetry = true;
 			int retryAttempts = 0;
 
+			driver.manage().deleteAllCookies();
+			driver.getDevTools().createSessionIfThereIsNotOne();
+			driver.getDevTools().send(Network.clearBrowserCache());
 			while (shouldRetry) {
 				try {
 					retryAttempts++;
-					driver.manage().deleteAllCookies();
-					driver.getDevTools().createSessionIfThereIsNotOne();
-					driver.getDevTools().send(Network.clearBrowserCache());
 					driver.get(pageUrl);
 					shouldRetry = false;
 				} catch (Exception ex) {
