@@ -22,13 +22,13 @@ public class RetailScrape {
 
 				// Nvidia GPUs
 				new NeweggSearch("Nvidia 3090 - Newegg USA", DiscordChannel.NVIDIA_3090_USA, MIN_WAIT_TIME, MAX_WAIT_TIME,
-						"https://www.newegg.com/p/pl?d=RTX+3090&N=8000%208000%20100006662&PageSize=96"),
+						"https://www.newegg.com/p/pl?d=RTX%203090&N=4814%208000%20100006662&PageSize=96"),
 				new NeweggSearch("Nvidia 3080 - Newegg USA", DiscordChannel.NVIDIA_3080_USA, MIN_WAIT_TIME, MAX_WAIT_TIME,
-						"https://www.newegg.com/p/pl?d=RTX+3080&N=8000%208000%20100006662&PageSize=96"),
+						"https://www.newegg.com/p/pl?d=RTX%203080&N=8000%208000%20100006662&PageSize=96"),
 				new NeweggSearch("Nvidia 3070 - Newegg USA", DiscordChannel.NVIDIA_3070_USA, MIN_WAIT_TIME, MAX_WAIT_TIME,
-						"https://www.newegg.com/p/pl?d=RTX+3070&N=8000%208000%20100006662&PageSize=96"),
+						"https://www.newegg.com/p/pl?d=RTX%203070&N=8000%208000%20100006662&PageSize=96"),
 				new NeweggSearch("Nvidia 3060ti - Newegg USA", DiscordChannel.NVIDIA_3060TI_USA, MIN_WAIT_TIME, MAX_WAIT_TIME,
-						"https://www.newegg.com/p/pl?d=RTX+3060+Ti&N=8000%208000%20100006662&PageSize=96"),
+						"https://www.newegg.com/p/pl?d=RTX%203060%20Ti&N=8000%208000%20100006662&PageSize=96"),
 
 				// AMD GPUs
 				new NeweggSearch("AMD 6900xt - Newegg USA", DiscordChannel.AMD_RX6900XT_USA, MIN_WAIT_TIME, MAX_WAIT_TIME,
@@ -36,7 +36,7 @@ public class RetailScrape {
 				new NeweggSearch("AMD 6800xt - Newegg USA", DiscordChannel.AMD_RX6800XT_USA, MIN_WAIT_TIME, MAX_WAIT_TIME,
 						"https://www.newegg.com/p/pl?d=6800xt&N=8000%20100006662&PageSize=96"),
 				new NeweggSearch("AMD 6800 - Newegg USA", DiscordChannel.AMD_RX6800_USA, MIN_WAIT_TIME, MAX_WAIT_TIME,
-						"https://www.newegg.com/p/pl?d=rx6800+-xt&N=8000%20100006662&PageSize=96"),
+						"https://www.newegg.com/p/pl?d=rx6800%20-xt&N=8000%20100006662&PageSize=96"),
 
 				// AMD CPUs
 				new NeweggSearch("AMD 5950x - Newegg USA", DiscordChannel.AMD_5950x_USA, MIN_WAIT_TIME, MAX_WAIT_TIME,
@@ -46,7 +46,7 @@ public class RetailScrape {
 				new NeweggSearch("AMD 5800x - Newegg USA", DiscordChannel.AMD_5800x_USA, MIN_WAIT_TIME, MAX_WAIT_TIME,
 						"https://www.newegg.com/p/pl?d=100-100000063WOF&N=100006676%204814%208000&PageSize=96"),
 				new NeweggSearch("AMD 5600x - Newegg USA", DiscordChannel.AMD_5600x_USA, MIN_WAIT_TIME, MAX_WAIT_TIME,
-						"https://www.newegg.com/p/pl?d=100-100000065BOX&N=100006676%204814%208000&PageSize=96"),
+						"https://www.newegg.com/p/pl?d=100-100000065BOX&N=100006676%204814%208000&PageSize=96")
 		};
 
 		System.out.println("Initializing main loop...");

@@ -6,6 +6,7 @@ import com.ayserjamshidi.retailscrape.addons.discord.announcing.DiscordSenderTem
 import com.ayserjamshidi.retailscrape.searchresults.template.NeweggSearchItem;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.devtools.v87.network.Network;
 
 import java.util.HashMap;
 import java.util.Random;
@@ -70,6 +71,8 @@ public class NeweggSearch extends WebSearchItem {
 				try {
 					retryAttempts++;
 					driver.manage().deleteAllCookies();
+					driver.getDevTools().createSessionIfThereIsNotOne();
+					driver.getDevTools().send(Network.clearBrowserCache());
 					driver.get(pageUrl);
 					shouldRetry = false;
 				} catch (Exception ex) {
