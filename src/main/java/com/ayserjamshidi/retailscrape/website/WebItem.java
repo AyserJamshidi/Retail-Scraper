@@ -34,7 +34,7 @@ public abstract class WebItem implements Runnable {
 
 	public void discordAnnouncement(DiscordChannel channel) {
 		try {
-			DiscordWebhook webhook = new DiscordWebhook(channel.webhookUrl);
+			DiscordWebhook webhook = new DiscordWebhook(channel.normalChannel);
 			webhook.setAvatarUrl("https://www.parcl.com/files/blog/8%20Online%20Stores%20with%20Cheap%20Tech%20Goods/newegg-logo.png");
 			webhook.setUsername("Newegg");
 			webhook.setTts(true);
