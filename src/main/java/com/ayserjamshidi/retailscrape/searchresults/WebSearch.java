@@ -1,44 +1,42 @@
 package com.ayserjamshidi.retailscrape.searchresults;
 
-import java.util.Map;
-import java.util.Random;
-
+import com.ayserjamshidi.retailscrape.addons.discord.DiscordAnnounce;
+import com.ayserjamshidi.retailscrape.addons.discord.DiscordChannel;
 import com.ayserjamshidi.retailscrape.searchresults.searcheditem.AmazonSearchItem;
-import com.ayserjamshidi.retailscrape.searchresults.searcheditem.BestBuySearchedItem;
+import com.ayserjamshidi.retailscrape.searchresults.searcheditem.BestBuySearchItem;
 import com.ayserjamshidi.retailscrape.searchresults.searcheditem.NeweggSearchItem;
 import com.ayserjamshidi.retailscrape.searchresults.searcheditem.TemplateSearchItem;
+import org.openqa.selenium.*;
 
-import com.ayserjamshidi.retailscrape.addons.discord.DiscordAnnounce;
-import org.openqa.selenium.WebElement;
-import com.ayserjamshidi.retailscrape.addons.mudfish.Fix;
-import org.openqa.selenium.Dimension;
-import org.openqa.selenium.chrome.ChromeDriver;
-
-import java.io.File;
-
-import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.By;
-import com.ayserjamshidi.retailscrape.addons.discord.DiscordChannel;
-
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Random;
 
 public class WebSearch extends Thread {
-	final int REFRESH_ATTEMPTS = 10;
+	// Pre-set variables variables
+	final int REFRESH_ATTEMPTS = 15;
 	final int ERROR_WAIT_MINUTES = 4;
 	final int GENERAL_WAIT_MINUTES = 35;
+	final int SAME_ITEM_WAIT_MINUTES = 60 * 6;
+
+	// Set on run-time
 	final int MIN_WAIT_SECONDS;
 	final int MAX_WAIT_SECONDS;
 
+	// Dynamics
 	int amountOfCombosAnnounced;
 	long comboTimeLimit;
 	HashMap<String, Long> announcedItems;
 	DiscordChannel discordChannel;
 	By itemSearchTerm;
 	private long lastComplaint;
-	WebDriver driver;
 	String[] pageUrls;
 	String lastAnnouncedItem;
+
+	// Driver setup
+	WebDriver driver;
+	Proxy proxy;
 
 	public WebSearch(final String threadName, final DiscordChannel discordChannel, final int MIN_WAIT_SECONDS, final int MAX_WAIT_SECONDS, final String[] pageUrls, final By itemSearchTerm) {
 		this.amountOfCombosAnnounced = 0;
@@ -47,65 +45,43 @@ public class WebSearch extends Thread {
 		this.discordChannel = null;
 		this.lastComplaint = 0;
 		this.lastAnnouncedItem = "";
-
-		if (pageUrls.length <= 0 || threadName.length() <= 0) {
-			System.out.println("BAD!!!!!");
-			System.exit(-1);
-		}
-
 		this.setName(threadName);
-		System.out.println("Initializing " + this.getName() + "...");
+		sendMessage("Initializing");
 
 		this.pageUrls = pageUrls;
 		this.discordChannel = discordChannel;
 		this.MIN_WAIT_SECONDS = MIN_WAIT_SECONDS;
 		this.MAX_WAIT_SECONDS = MAX_WAIT_SECONDS;
 		this.itemSearchTerm = itemSearchTerm;
-
-		System.setProperty("webdriver.chrome.driver", System.getProperty("os.name").contains("Mac OS") ? "src/main/drivers/chromedriver" : "src/main/drivers/chromedriver.exe");
-
-		ChromeOptions options = new ChromeOptions();
-		options.addExtensions(new File("src/main/extensions/Mudfish-HTTP-Proxy_v4.4.8.crx"));
-
-		options.setExperimentalOption("excludeSwitches", new String[]{"enable-automation"});
-
-//		Map<String, Object> chromePrefs = new HashMap<>();
-//		chromePrefs.put("profile.managed_default_content_settings.javascript", 2);
-//		options.setExperimentalOption("prefs", chromePrefs);
-
-		this.driver = new ChromeDriver(options);
-		this.driver.manage().window().setSize(new Dimension(300, 180));
 	}
 
 	@Override
 	public void run() {
-		if (this.pageUrls[0].toLowerCase().contains("newegg")) {
-			System.out.println("[" + this.getName() + "] - Setting VPN");
-			Fix.thing(this.driver);
-			System.out.println("Done");
-		}
+		List<TemplateSearchItem> normalItemList = new ArrayList<>();
+		List<TemplateSearchItem> comboItemList = new ArrayList<>();
 
 		while (!this.isInterrupted()) {
 			for (final String currentUrl : pageUrls) {
-				driver.get(currentUrl);
-				sleep(randomMilliToSeconds(MIN_WAIT_SECONDS, MAX_WAIT_SECONDS));
-
-				System.out.println(driver.getPageSource() + "\n");
-				System.exit(-1);
+				pageReload(currentUrl);
+				afterLoadTasks();
+				sleep(secondsRand(MIN_WAIT_SECONDS, MAX_WAIT_SECONDS), true);
 
 				try {
 					if (pageReloaded()) {
+//						sendMessage("Good load!");
 						for (final WebElement curPossibleItem : driver.findElements(itemSearchTerm)) {
-							if (itemIsGood(curPossibleItem)) {
-								final TemplateSearchItem currentItem = testFunction(curPossibleItem, currentUrl);
-								if (currentItem == null)
-									throw new Exception("Something happened while trying to create a new object!");
 
-								if (!currentItem.isAvailable() || !canAnnounce(currentItem.itemName))
-									continue;
+							if (!itemIsValid(curPossibleItem))
+								continue;
 
+							final TemplateSearchItem currentItem = itemCreator(curPossibleItem);
+
+							if (itemIsAvailable(currentItem)) {
 								if (itemIsCombo(currentItem)) {
-									if (System.currentTimeMillis() - comboTimeLimit < 900000)
+									if (System.currentTimeMillis() - comboTimeLimit < minutes(15))
+										continue;
+
+									if (comboItemList.size() >= 10)
 										continue;
 
 									if (amountOfCombosAnnounced >= 2) {
@@ -115,7 +91,7 @@ public class WebSearch extends Thread {
 											@Override
 											public void run() {
 												try {
-													Thread.sleep(milliToMinutes(30));
+													Thread.sleep(minutes(30));
 													amountOfCombosAnnounced = 0;
 												} catch (InterruptedException e) {
 													e.printStackTrace();
@@ -124,35 +100,55 @@ public class WebSearch extends Thread {
 										};
 										continue;
 									}
+									comboItemList.add(currentItem);
 									amountOfCombosAnnounced++;
+								} else {
+									if (normalItemList.size() >= 10)
+										continue;
+
+									normalItemList.add(currentItem);
 								}
-								System.out.println("[IN STOCK] " + currentItem.itemName);
+
+								sendMessage("[IN STOCK] " + currentItem.itemName);
 								lastAnnouncedItem = currentItem.itemName;
 								announcedItems.put(currentItem.itemName, System.currentTimeMillis());
-								DiscordAnnounce.announce(this.discordChannel, currentItem, this.itemIsCombo(currentItem));
-								sleep(500);
 							}
 						}
+
+						// Wipe both lists so we don't spam announce
+						if (normalItemList.size() > 0) {
+							DiscordAnnounce.announce(discordChannel, normalItemList, false);
+							normalItemList.clear();
+						}
+						if (comboItemList.size() > 0) {
+							DiscordAnnounce.announce(discordChannel, comboItemList, true);
+							comboItemList.clear();
+						}
+
 					} else if (canComplain()) {
-						System.out.println("Complaining time");
+						sendMessage("Complaining time");
+//						System.out.println("== " + driver.getTitle() + "\n" + driver.getPageSource());
 						badPageReload();
 					}
 				} catch (Exception ex) {
 					ex.printStackTrace();
 				}
-				pageReload(currentUrl);
 			}
 		}
 
-		new DiscordAnnounce().error("[" + this.getName() + "] - Thread has crashed for some unknown reason. Restart the bot!");
+		DiscordAnnounce.error("[" + this.getName() + "] - Thread has crashed for some unknown reason. Restart the bot!");
+	}
+
+	protected void afterLoadTasks() {
 	}
 
 	protected boolean itemIsCombo(final Object obj) {
 		return false;
 	}
 
-	protected boolean itemIsGood(final WebElement element) throws Exception {
-		throw new Exception("[" + this.getName() + "] - itemIsGood is not overridden.");
+	protected boolean itemIsValid(final WebElement element) throws Exception {
+		return true;
+		//throw new Exception("[" + this.getName() + "] - itemIsGood is not overridden.");
 	}
 
 	protected boolean pageReloaded() {
@@ -179,59 +175,92 @@ public class WebSearch extends Thread {
 		}
 	}
 
-	private TemplateSearchItem testFunction(final WebElement curPossibleItem, final String currentUrl) {
+	protected void setupProxy() {
+
+	}
+
+	private TemplateSearchItem itemCreator(final WebElement curPossibleItem) {
 		switch (this.getClass().getSimpleName()) {
 			case "NeweggSearch":
 				return new NeweggSearchItem(curPossibleItem);
 			case "BestBuySearch":
-				return new BestBuySearchedItem(curPossibleItem);
+				return new BestBuySearchItem(curPossibleItem);
 			case "AmazonSearch":
 				return new AmazonSearchItem(curPossibleItem);
-			default: {
-				System.out.println("What happened??  == " + this.getClass().getSimpleName());
+			default:
 				return null;
-			}
 		}
+	}
+
+	private boolean itemIsAvailable(TemplateSearchItem givenItem) {
+		if (givenItem == null)
+			return false;
+
+		if (!givenItem.isAvailable()) {
+//			sendMessage("[OUT OF STOCK] " + givenItem.itemName);
+			return false;
+		}
+
+		if (!canAnnounce(givenItem.itemName)) {
+			sendMessage("[IN STOCK - SKIPPED] " + givenItem.itemName);
+			return false;
+		}
+
+		return true;
 	}
 
 	private void pageReload(final String currentUrl) {
-		this.driver.get(currentUrl);
+		for (int i = 0; i < REFRESH_ATTEMPTS; i++)
+			try {
+				driver.get(currentUrl);
+				sleep(i * 500, false);
+				if (!driver.getTitle().contains("human"))
+					break; // This will break us out of the attempted refresh loop if a successful load occurs
+//				else
+//					sleep(1000, false);
+			} catch (WebDriverException ex) {
+				ex.printStackTrace();
+				DiscordAnnounce.error("[" + this.getName() + "] - Something happened while attempting to refresh.");
+			}
 	}
 
 	private boolean canAnnounce(final String itemName) {
-		if (!this.announcedItems.containsKey(itemName)) {
+		if (!announcedItems.containsKey(itemName))
 			return true;
-		}
 
-		if (this.lastAnnouncedItem.equals(itemName)) {
-			return System.currentTimeMillis() - this.announcedItems.get(itemName) > 3600000L;
-		}
+		if (lastAnnouncedItem.equals(itemName))
+			return System.currentTimeMillis() - announcedItems.get(itemName) > minutes(SAME_ITEM_WAIT_MINUTES);
 
-		return System.currentTimeMillis() - this.announcedItems.get(itemName) > 2100000L;
+		return System.currentTimeMillis() - announcedItems.get(itemName) > minutes(GENERAL_WAIT_MINUTES);
 	}
 
 	private boolean canComplain() {
-		if (System.currentTimeMillis() - this.lastComplaint > 240000L) {
-			this.lastComplaint = System.currentTimeMillis();
+		if (System.currentTimeMillis() - lastComplaint > minutes(ERROR_WAIT_MINUTES)) {
+			lastComplaint = System.currentTimeMillis();
 			return true;
 		}
 		return false;
 	}
 
-	protected int milliToMinutes(final int i) {
+	protected int minutes(final int i) {
 		return i * 60000;
 	}
 
-	protected int randomMilliToSeconds(final int minSeconds, final int maxSeconds) {
+	protected int secondsRand(final int minSeconds, final int maxSeconds) {
 		return (new Random().nextInt(maxSeconds - minSeconds) + minSeconds) * 1000;
 	}
 
-	protected void sleep(final int ms) {
+	protected void sleep(final int ms, boolean announce) {
 		try {
-			System.out.println(this.getName() + " - Sleeping for " + ms + " ms.");
+			if (announce)
+				sendMessage("Sleeping for " + ms / 1000 + " seconds.");
 			Thread.sleep(ms);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+	}
+
+	protected void sendMessage(String message) {
+		System.out.println("[" + this.getName() + "] - " + message);
 	}
 }

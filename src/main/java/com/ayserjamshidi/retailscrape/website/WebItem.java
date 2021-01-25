@@ -3,16 +3,15 @@ package com.ayserjamshidi.retailscrape.website;
 import com.ayserjamshidi.retailscrape.addons.discord.DiscordChannel;
 import com.ayserjamshidi.retailscrape.addons.discord.DiscordWebhook;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
 
 import java.awt.*;
 import java.util.List;
 
 public abstract class WebItem implements Runnable {
 
-	//	WebDriver driver;
-	 ChromeDriver driver;
+		WebDriver driver;
 //	HtmlUnitDriver driver;
 
 	//	HtmlUnitDriver driver;
@@ -21,7 +20,7 @@ public abstract class WebItem implements Runnable {
 
 	public WebItem() {
 //		driver = new HtmlUnitDriver();
-		driver = new ChromeDriver();
+//		driver = new ChromeDriver();
 	}
 
 	public void sleep(int ms) {

@@ -12,14 +12,18 @@ public class NeweggSearchItem extends TemplateSearchItem {
 		final WebElement itemTitle = searchedItem.findElement(By.className("item-title"));
 		final WebElement itemAction = searchedItem.findElement(By.className("item-action"));
 
-		this.itemUrl = itemTitle.getAttribute("href");
+		this.itemUrl = itemTitle.getAttribute("href").replace(" ", "%20");
 		this.isCombo = this.itemUrl.contains("ComboDealDetails");
-		this.imageUrl = searchedItem.findElement(By.cssSelector(".item-img img")).getAttribute("src");
+		this.imageUrl = searchedItem.findElement(By.cssSelector(".item-img img")).getAttribute("src").replace(" ", "%20");
 		this.itemName = itemTitle.getText();
-		this.itemPrice = this.getFirstElementText(itemAction, By.className("price-current"));
+
+		this.itemPrice = getFirstElementText(itemAction, By.className("price-current"));
+		if (this.itemPrice != null)
+			this.itemPrice = this.itemPrice.substring(0, itemPrice.indexOf(' '));
+
 		this.itemButtonText = itemAction.findElement(By.className("item-button-area")).getText();
-		this.promotion = this.getFirstElementText(searchedItem, By.className("item-promo"));
-		this.messageInformation = this.getFirstElementText(searchedItem, By.className("message-wrapper"));
+		this.promotion = getFirstElementText(searchedItem, By.className("item-promo"));
+		this.messageInformation = getFirstElementText(searchedItem, By.className("message-wrapper"));
 
 		if (this.isCombo) {
 			this.addToCartUrl += this.itemUrl.substring(this.itemUrl.lastIndexOf("Combo."));
@@ -40,11 +44,11 @@ public class NeweggSearchItem extends TemplateSearchItem {
 		};
 
 		for (final String curUnavailableText : possibleUnavailableTexts)
-			if (this.itemButtonText.equalsIgnoreCase(curUnavailableText))
+			if (itemButtonText.equalsIgnoreCase(curUnavailableText))
 				return false;
 
 		// Wtf is this
-		return (this.promotion == null || !this.promotion.contains("OUT OF STOCK")) && (this.messageInformation == null || !this.messageInformation.contains("out of stock"));
+		return (promotion == null || !promotion.contains("OUT OF STOCK")) && (messageInformation == null || !messageInformation.contains("out of stock"));
 	}
 
 	@Override
