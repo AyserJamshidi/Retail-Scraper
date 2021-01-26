@@ -26,50 +26,50 @@ public class GeneralTrackingList {
 class NeweggList {
 	public Thread[] threads = {
 			//Nvidia GPU
-			new NeweggSearch("Nvidia 3090 - Newegg USA", DiscordChannel.NVIDIA_3090_USA, new String[]{
+			new NeweggSearch("Nvidia 3090 - Newegg USA", DiscordChannel.ADMIN_ERRORS, new String[]{
 					"https://www.newegg.com/p/pl?d=RTX%203090%20GPU&N=4814%208000%20100006662&PageSize=96",
 					"https://www.newegg.com/p/pl?d=RTX%203090%20GPU&N=4814%20100006662%208000&PageSize=96"
 			}),
-			new NeweggSearch("Nvidia 3080 - Newegg USA", DiscordChannel.NVIDIA_3080_USA, new String[]{
+			new NeweggSearch("Nvidia 3080 - Newegg USA", DiscordChannel.ADMIN_ERRORS, new String[]{
 					"https://www.newegg.com/p/pl?d=RTX%203080%20GPU&N=8000%208000%20100006662%204021%204022&PageSize=96",
 					"https://www.newegg.com/p/pl?d=RTX%203080%20GPU&N=8000%208000%20100006662&PageSize=96",
 					"https://www.newegg.com/p/pl?d=RTX%203080%20GPU&N=4022%20100006662%204021%204814%208000%204841&PageSize=96",
 					"https://www.newegg.com/p/pl?d=RTX%203080%20GPU&N=100006662%208000%204021%204841%204022%204814&PageSize=96"
 			}),
-			new NeweggSearch("Nvidia 3070 - Newegg USA", DiscordChannel.NVIDIA_3070_USA, new String[]{
+			new NeweggSearch("Nvidia 3070 - Newegg USA", DiscordChannel.ADMIN_ERRORS, new String[]{
 					"https://www.newegg.com/p/pl?d=RTX%203070%20GPU&N=8000%208000%20100006662&PageSize=96",
 					"https://www.newegg.com/p/pl?d=RTX%203070%20GPU&N=8000%204814%20100006662&PageSize=96",
 					"https://www.newegg.com/p/pl?d=RTX%203070%20GPU&N=4814%20100006662%208000&PageSize=96"
 			}),
-			new NeweggSearch("Nvidia 3060ti - Newegg USA", DiscordChannel.NVIDIA_3060TI_USA, new String[]{
+			new NeweggSearch("Nvidia 3060ti - Newegg USA", DiscordChannel.ADMIN_ERRORS, new String[]{
 					"https://www.newegg.com/p/pl?d=RTX%203060%20Ti%20GPU&N=8000%208000%20100006662&PageSize=96",
 					"https://www.newegg.com/p/pl?d=RTX%203060%20Ti%20GPU&N=8000%20100006662%204814&PageSize=96"
 			}),
 
 			// AMD GPU
-			new NeweggSearch("AMD 6900XT - Newegg USA", DiscordChannel.AMD_RX6900XT_USA, new String[]{
+			new NeweggSearch("AMD 6900XT - Newegg USA", DiscordChannel.ADMIN_ERRORS, new String[]{
 					"https://www.newegg.com/p/pl?d=6900xt%20GPU&N=8000%20100006662&PageSize=96"
 			}),
-			new NeweggSearch("AMD 6800XT - Newegg USA", DiscordChannel.AMD_RX6800XT_USA, new String[]{
+			new NeweggSearch("AMD 6800XT - Newegg USA", DiscordChannel.ADMIN_ERRORS, new String[]{
 					"https://www.newegg.com/p/pl?d=6800xt%20GPU&N=8000%20100006662&PageSize=96"
 			}),
-			new NeweggSearch("AMD 6800 - Newegg USA", DiscordChannel.AMD_RX6800_USA, new String[]{
-					"https://www.newegg.com/p/pl?d=rx6800%20GPU%20-xt0&N=8000%20100006662&PageSize=96"
+			new NeweggSearch("AMD 6800 - Newegg USA", DiscordChannel.ADMIN_ERRORS, new String[]{
+					"https://www.newegg.com/p/pl?d=rx6800%20GPU%20-xt&N=8000%20100006662&PageSize=96"
 			}),
 
 			// AMD CPU
-			new NeweggSearch("AMD 5950X - Newegg USA", DiscordChannel.AMD_5950x_USA, new String[]{
+			new NeweggSearch("AMD 5950X - Newegg USA", DiscordChannel.ADMIN_ERRORS, new String[]{
 					"https://www.newegg.com/p/pl?d=100-100000059WOF&N=100006676%204814%208000&PageSize=96"
 			}),
-			new NeweggSearch("AMD 5900X - Newegg USA", DiscordChannel.AMD_5900x_USA, new String[]{
+			new NeweggSearch("AMD 5900X - Newegg USA", DiscordChannel.ADMIN_ERRORS, new String[]{
 					"https://www.newegg.com/p/pl?d=100-100000061WOF&N=100006676%204814%208000&PageSize=96"
 			}),
-			new NeweggSearch("AMD 5800X - Newegg USA", DiscordChannel.AMD_5800x_USA, new String[]{
+			new NeweggSearch("AMD 5800X - Newegg USA", DiscordChannel.ADMIN_ERRORS, new String[]{
 					"https://www.newegg.com/p/pl?d=100-100000063WOF&N=100006676%204814%208000&PageSize=96",
 					"https://www.newegg.com/p/pl?d=100-100000063WOF&N=8000%20100006676%204814&PageSize=96",
 					"https://www.newegg.com/p/pl?d=100-100000063WOF&N=100006676%208000%204814&PageSize=96"
 			}),
-			new NeweggSearch("AMD 5600X - Newegg USA", DiscordChannel.AMD_5600x_USA, new String[]{
+			new NeweggSearch("AMD 5600X - Newegg USA", DiscordChannel.ADMIN_ERRORS, new String[]{
 					"https://www.newegg.com/p/pl?d=100-100000065BOX&N=100006676%204814%208000&PageSize=96",
 					"https://www.newegg.com/p/pl?d=100-100000065BOX&N=8000%20100006676%204814&PageSize=96",
 					"https://www.newegg.com/p/pl?d=100-100000065BOX&N=100006676%208000%204814&PageSize=96"

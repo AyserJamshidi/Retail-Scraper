@@ -17,7 +17,7 @@ public class WebSearch extends Thread {
 	// Pre-set variables variables
 	final int REFRESH_ATTEMPTS = 15;
 	final int ERROR_WAIT_MINUTES = 4;
-	final int GENERAL_WAIT_MINUTES = 35;
+	final int GENERAL_WAIT_MINUTES = 60 * 6; // 35;
 	final int SAME_ITEM_WAIT_MINUTES = 60 * 6;
 
 	// Set on run-time
@@ -37,6 +37,9 @@ public class WebSearch extends Thread {
 	// Driver setup
 	WebDriver driver;
 	Proxy proxy;
+
+	// Prevents us from switching proxies too quickly
+	long lastGoodLoad = System.currentTimeMillis(); // Current time because if set to 0, would be pretty weird
 
 	public WebSearch(final String threadName, final DiscordChannel discordChannel, final int MIN_WAIT_SECONDS, final int MAX_WAIT_SECONDS, final String[] pageUrls, final By itemSearchTerm) {
 		this.amountOfCombosAnnounced = 0;
@@ -62,12 +65,13 @@ public class WebSearch extends Thread {
 
 		while (!this.isInterrupted()) {
 			for (final String currentUrl : pageUrls) {
-				pageReload(currentUrl);
+				reloadPage(currentUrl);
 				afterLoadTasks();
-				sleep(secondsRand(MIN_WAIT_SECONDS, MAX_WAIT_SECONDS), true);
+				sleep(5000, false);
 
 				try {
 					if (pageReloaded()) {
+						lastGoodLoad = System.currentTimeMillis();
 //						sendMessage("Good load!");
 						for (final WebElement curPossibleItem : driver.findElements(itemSearchTerm)) {
 
@@ -133,6 +137,8 @@ public class WebSearch extends Thread {
 				} catch (Exception ex) {
 					ex.printStackTrace();
 				}
+
+				sleep(secondsRand(MIN_WAIT_SECONDS, MAX_WAIT_SECONDS), true);
 			}
 		}
 
@@ -209,7 +215,7 @@ public class WebSearch extends Thread {
 		return true;
 	}
 
-	private void pageReload(final String currentUrl) {
+	private void reloadPage(final String currentUrl) {
 		for (int i = 0; i < REFRESH_ATTEMPTS; i++)
 			try {
 				driver.get(currentUrl);

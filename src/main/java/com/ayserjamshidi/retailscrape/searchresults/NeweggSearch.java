@@ -17,7 +17,7 @@ import java.util.Map;
 public class NeweggSearch extends WebSearch {
 
 	public NeweggSearch(final String threadName, final DiscordChannel discordChannel, final String[] pageUrl) {
-		super(threadName, discordChannel, 60, 120, pageUrl, By.className("item-cell"));
+		super(threadName, discordChannel, 10, 15, pageUrl, By.className("item-cell"));
 	}
 
 	@Override
@@ -26,7 +26,7 @@ public class NeweggSearch extends WebSearch {
 //		driver = new HtmlUnitDriverErrorless(false);
 
 		// Setup proxy
-//		proxy = new Proxy();
+		proxy = new Proxy();
 		setupProxy();
 
 		// Call parent
@@ -83,8 +83,11 @@ public class NeweggSearch extends WebSearch {
 	@Override
 	protected void setupProxy() {
 		if (RetailScrape.proxyList.size() > 0) {
-			if (RetailScrape.proxyIndex == RetailScrape.proxyList.size()) // Reset index so we don't go OOB
-				RetailScrape.proxyIndex = 0;
+			if (RetailScrape.proxyIndex == RetailScrape.proxyList.size()) // If OOB
+				RetailScrape.proxyIndex = 0; // Start at the beginning again
+
+			if (driver != null)
+				driver.close();
 
 //			proxy.setHttpProxy(RetailScrape.proxyList.get(RetailScrape.proxyIndex));
 //			proxy.setSslProxy(RetailScrape.proxyList.get(RetailScrape.proxyIndex++));
@@ -124,12 +127,15 @@ public class NeweggSearch extends WebSearch {
 		String outputMessage = null;
 
 		if (loweredTitle.contains("are you a human?")) {
-//			setupProxy();
-			DiscordAnnounce.error("[" + this.getName() + "] - Human crap is back...");
+			if (System.currentTimeMillis() - lastGoodLoad > 5 * 60000) {
+				DiscordAnnounce.error("[" + this.getName() + "] - Changing IP");
+				setupProxy();
+			}
+//			DiscordAnnounce.error("[" + this.getName() + "] - Human crap is back... IP is now");
 		} else if (loweredTitle.contains("403 error")) {
 			outputMessage = "IP banned. Change VPN source!";
 		} else {
-			outputMessage = "Something happened while trying to reload URL";
+			outputMessage = "Something happened while trying to reload URL, title is: " + driver.getTitle();
 		}
 
 		if (outputMessage != null)
