@@ -13,8 +13,8 @@ import java.util.List;
 
 public class AcquireProxyList {
 	private final String USER_AGENT = "Mozilla/5.0";
-//	private final String GET_URL = "https://proxy.webshare.io/api/proxy/list/";
-	private final String GET_URL = "http://api.mudfish.net/graphql?query=%7B%0A%09user%20%7B%0A%09%09vNodeStatuses%20%7B%0A%09%09%09vid%0A%09%09%09location%0A%09%09%09rttavg%0A%09%09%09rttstd%0A%09%09%7D%0A%09%7D%0A%7D";
+		private final String GET_URL = "https://proxy.webshare.io/api/proxy/list/";
+//	private final String GET_URL = "http://api.mudfish.net/graphql?query=%7B%0A%09user%20%7B%0A%09%09vNodeStatuses%20%7B%0A%09%09%09vid%0A%09%09%09location%0A%09%09%09rttavg%0A%09%09%09rttstd%0A%09%09%7D%0A%09%7D%0A%7D";
 	private final String GET_URL2 = "http://api.mudfish.net/graphql?query=%7B%0A%09user%20%7B%0A%09%09vNodeStatuses%20%7B%0A%09%09%09vid%0A%09%09%09location%0A%09%09%7D%0A%09%7D%0A%7D";
 	private final String API_KEY = "691a70280566a3162d755135363409dd32f039d3";
 

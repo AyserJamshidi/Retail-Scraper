@@ -2,10 +2,10 @@ package com.ayserjamshidi.retailscrape.searchresults;
 
 import com.ayserjamshidi.retailscrape.addons.discord.DiscordAnnounce;
 import com.ayserjamshidi.retailscrape.addons.discord.DiscordChannel;
-import com.ayserjamshidi.retailscrape.searchresults.searcheditem.AmazonSearchItem;
-import com.ayserjamshidi.retailscrape.searchresults.searcheditem.BestBuySearchItem;
-import com.ayserjamshidi.retailscrape.searchresults.searcheditem.NeweggSearchItem;
-import com.ayserjamshidi.retailscrape.searchresults.searcheditem.TemplateSearchItem;
+import com.ayserjamshidi.retailscrape.searchresults.itemtemplate.AmazonSearchItem;
+import com.ayserjamshidi.retailscrape.searchresults.itemtemplate.BestBuySearchItem;
+import com.ayserjamshidi.retailscrape.searchresults.itemtemplate.NeweggSearchItem;
+import com.ayserjamshidi.retailscrape.searchresults.itemtemplate.TemplateSearchItem;
 import org.openqa.selenium.*;
 
 import java.util.ArrayList;
@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
+/// TODO: If we've announced, and add to cart is found, don't announce until add to cart hasn't been found for at least 15 refreshes!
 public class WebSearch extends Thread {
 	// Pre-set variables variables
 	final int REFRESH_ATTEMPTS = 15;
@@ -68,11 +69,11 @@ public class WebSearch extends Thread {
 				reloadPage(currentUrl);
 				afterLoadTasks();
 				sleep(5000, false);
+				sendMessage(driver.getTitle() + " - Last good load: " + (System.currentTimeMillis() - lastGoodLoad) / 60000L + " minutes ago");
 
 				try {
 					if (pageReloaded()) {
 						lastGoodLoad = System.currentTimeMillis();
-//						sendMessage("Good load!");
 						for (final WebElement curPossibleItem : driver.findElements(itemSearchTerm)) {
 
 							if (!itemIsValid(curPossibleItem))
@@ -138,7 +139,7 @@ public class WebSearch extends Thread {
 					ex.printStackTrace();
 				}
 
-				sleep(secondsRand(MIN_WAIT_SECONDS, MAX_WAIT_SECONDS), true);
+				sleep(secondsRand(MIN_WAIT_SECONDS, MAX_WAIT_SECONDS), false);
 			}
 		}
 
@@ -215,18 +216,14 @@ public class WebSearch extends Thread {
 		return true;
 	}
 
-	private void reloadPage(final String currentUrl) {
+	protected void reloadPage(final String currentUrl) {
 		for (int i = 0; i < REFRESH_ATTEMPTS; i++)
 			try {
 				driver.get(currentUrl);
-				sleep(i * 500, false);
-				if (!driver.getTitle().contains("human"))
-					break; // This will break us out of the attempted refresh loop if a successful load occurs
-//				else
-//					sleep(1000, false);
+				break;
 			} catch (WebDriverException ex) {
 				ex.printStackTrace();
-				DiscordAnnounce.error("[" + this.getName() + "] - Something happened while attempting to refresh.");
+				DiscordAnnounce.error("[" + this.getName() + "] - Tried loading the assigned URL but caught an exception.");
 			}
 	}
 

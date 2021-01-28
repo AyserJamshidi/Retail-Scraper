@@ -1,6 +1,7 @@
 package com.ayserjamshidi.retailscrape.searchresults;
 
 import com.ayserjamshidi.retailscrape.addons.discord.DiscordChannel;
+import com.ayserjamshidi.retailscrape.drivers.HtmlUnitDriverErrorless;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
@@ -13,7 +14,7 @@ public class BestBuySearch extends WebSearch {
 
 	@Override
 	public void run() {
-//		driver = new HtmlUnitDriverErrorless(false);
+		driver = new HtmlUnitDriverErrorless(false);
 
 		super.run();
 	}

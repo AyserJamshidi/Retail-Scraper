@@ -1,6 +1,6 @@
-package com.ayserjamshidi.retailscrape.searchresults;
+package com.ayserjamshidi.retailscrape.drivers;
 
-/*import com.gargoylesoftware.htmlunit.BrowserVersion;
+import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.gargoylesoftware.htmlunit.WebClient;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 
@@ -9,7 +9,7 @@ import java.util.logging.Logger;
 
 public class HtmlUnitDriverErrorless extends HtmlUnitDriver {
 	public HtmlUnitDriverErrorless(boolean enableJavascript) {
-		super(BrowserVersion.FIREFOX_31, enableJavascript);
+		super(BrowserVersion.CHROME, enableJavascript);
 	}
 
 	@Override
@@ -34,4 +34,4 @@ public class HtmlUnitDriverErrorless extends HtmlUnitDriver {
 
 		return modifiedWebClient;
 	}
-}*/
+}

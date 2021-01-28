@@ -14,13 +14,6 @@ public class RetailScrape {
 	public static int proxyIndex = 0;
 
 	public static void main(final String[] args) {
-
-		System.out.println(new AcquireProxyList().requestProxyListv2());
-
-		if (true)
-			System.exit(0);
-
-
 		System.out.print("Setting global proxy list...  ");
 		proxyList.addAll(new AcquireProxyList().retrieveProxyList());
 		Collections.shuffle(proxyList);

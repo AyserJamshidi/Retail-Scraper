@@ -1,8 +1,6 @@
 package com.ayserjamshidi.retailscrape.addons.discord;
 
-import com.ayserjamshidi.retailscrape.addons.discord.DiscordWebhook;
-import com.ayserjamshidi.retailscrape.searchresults.searcheditem.TemplateSearchItem;
-import com.ayserjamshidi.retailscrape.addons.discord.DiscordChannel;
+import com.ayserjamshidi.retailscrape.searchresults.itemtemplate.TemplateSearchItem;
 
 import java.util.List;
 

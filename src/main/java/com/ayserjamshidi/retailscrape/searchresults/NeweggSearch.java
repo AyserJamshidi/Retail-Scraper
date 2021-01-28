@@ -3,16 +3,11 @@ package com.ayserjamshidi.retailscrape.searchresults;
 import com.ayserjamshidi.retailscrape.RetailScrape;
 import com.ayserjamshidi.retailscrape.addons.discord.DiscordAnnounce;
 import com.ayserjamshidi.retailscrape.addons.discord.DiscordChannel;
-import com.ayserjamshidi.retailscrape.searchresults.searcheditem.NeweggSearchItem;
+import com.ayserjamshidi.retailscrape.drivers.HtmlUnitDriverErrorless;
+import com.ayserjamshidi.retailscrape.searchresults.itemtemplate.NeweggSearchItem;
 import org.openqa.selenium.By;
-import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class NeweggSearch extends WebSearch {
 
@@ -23,7 +18,7 @@ public class NeweggSearch extends WebSearch {
 	@Override
 	public void run() {
 		// Init
-//		driver = new HtmlUnitDriverErrorless(false);
+		driver = new HtmlUnitDriverErrorless(false);
 
 		// Setup proxy
 		proxy = new Proxy();
@@ -81,22 +76,29 @@ public class NeweggSearch extends WebSearch {
 	}
 
 	@Override
+	protected void afterLoadTasks() {
+		driver.manage().deleteAllCookies();
+	}
+
+	@Override
 	protected void setupProxy() {
 		if (RetailScrape.proxyList.size() > 0) {
 			if (RetailScrape.proxyIndex == RetailScrape.proxyList.size()) // If OOB
 				RetailScrape.proxyIndex = 0; // Start at the beginning again
 
+			proxy.setHttpProxy(RetailScrape.proxyList.get(RetailScrape.proxyIndex));
+			proxy.setSslProxy(RetailScrape.proxyList.get(RetailScrape.proxyIndex++));
+
+			((HtmlUnitDriverErrorless) driver).setProxySettings(proxy);
+
+			// Chrome shit
+			/*
 			if (driver != null)
 				driver.close();
 
-//			proxy.setHttpProxy(RetailScrape.proxyList.get(RetailScrape.proxyIndex));
-//			proxy.setSslProxy(RetailScrape.proxyList.get(RetailScrape.proxyIndex++));
-
 			System.setProperty("webdriver.chrome.driver", "src/main/drivers/chromedriver" + (System.getProperty("os.name").contains("Mac OS") ? "" : ".exe"));
-
-			// Chrome shit
 			ChromeOptions options = new ChromeOptions();
-//			options.setCapability("proxy", proxy);
+			options.setCapability("proxy", proxy);
 
 			options.setExperimentalOption("excludeSwitches", new String[]{"enable-automation"});
 
@@ -107,7 +109,7 @@ public class NeweggSearch extends WebSearch {
 			options.setExperimentalOption("prefs", chromePrefs);
 
 			driver = new ChromeDriver(options);
-			driver.manage().window().setSize(new Dimension(180, 180));
+			driver.manage().window().setSize(new Dimension(180, 180));*/
 
 			//((HtmlUnitDriver) driver).setProxySettings(proxy);
 //			sendMessage("Using index " + RetailScrape.proxyIndex + ", proxy " + proxy.getHttpProxy());
@@ -116,22 +118,39 @@ public class NeweggSearch extends WebSearch {
 		}
 	}
 
+//	@Override
+//	protected void reloadPage(String currentUrl) {
+//		if (pageReloaded()) {
+//
+//		} else {
+//			driver.get("https://www.proxysite.com/");
+//			WebElement enterUrl = driver.findElement(By.name("d"));
+//			enterUrl.sendKeys("Hi!");
+//		}
+//	}
+
 	@Override
 	protected boolean pageReloaded() {
 		return driver.getPageSource().toLowerCase().contains("shipped by newegg");
 	}
 
+	boolean hasntComplainedYet = true;
 	@Override
 	protected void badPageReload() {
 		final String loweredTitle = driver.getTitle().toLowerCase();
 		String outputMessage = null;
 
 		if (loweredTitle.contains("are you a human?")) {
-			if (System.currentTimeMillis() - lastGoodLoad > 5 * 60000) {
-				DiscordAnnounce.error("[" + this.getName() + "] - Changing IP");
+			if (System.currentTimeMillis() - lastGoodLoad >= 5 * 60000) {
+				hasntComplainedYet = true;
+				lastGoodLoad = System.currentTimeMillis();
 				setupProxy();
-			}
-//			DiscordAnnounce.error("[" + this.getName() + "] - Human crap is back... IP is now");
+				sendMessage("IP has changed to " + proxy.getHttpProxy());
+
+			}/* else if (System.currentTimeMillis() - lastGoodLoad >= 3 * 60000 && hasntComplainedYet) {
+				hasntComplainedYet = false;
+				DiscordAnnounce.error("[" + this.getName() + "] - Bot detection triggered...  Might change IP in 2 minutes.");
+			}*/
 		} else if (loweredTitle.contains("403 error")) {
 			outputMessage = "IP banned. Change VPN source!";
 		} else {

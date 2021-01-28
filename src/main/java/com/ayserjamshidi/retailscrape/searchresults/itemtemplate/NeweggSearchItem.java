@@ -1,4 +1,4 @@
-package com.ayserjamshidi.retailscrape.searchresults.searcheditem;
+package com.ayserjamshidi.retailscrape.searchresults.itemtemplate;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
@@ -18,8 +18,12 @@ public class NeweggSearchItem extends TemplateSearchItem {
 		this.itemName = itemTitle.getText();
 
 		this.itemPrice = getFirstElementText(itemAction, By.className("price-current"));
-		if (this.itemPrice != null)
-			this.itemPrice = this.itemPrice.substring(0, itemPrice.indexOf(' '));
+		if (this.itemPrice != null) {
+			int priceSpaceIndex = itemPrice.indexOf(' ');
+
+			if (priceSpaceIndex != -1)
+				this.itemPrice = this.itemPrice.substring(0, itemPrice.indexOf(' '));
+		}
 
 		this.itemButtonText = itemAction.findElement(By.className("item-button-area")).getText();
 		this.promotion = getFirstElementText(searchedItem, By.className("item-promo"));

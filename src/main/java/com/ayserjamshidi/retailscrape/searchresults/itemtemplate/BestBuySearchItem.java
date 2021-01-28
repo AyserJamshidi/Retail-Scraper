@@ -1,4 +1,4 @@
-package com.ayserjamshidi.retailscrape.searchresults.searcheditem;
+package com.ayserjamshidi.retailscrape.searchresults.itemtemplate;
 
 import java.util.List;
 
