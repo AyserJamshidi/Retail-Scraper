@@ -14,13 +14,18 @@ public class DiscordAnnouncer extends Thread {
 
 	@Override
 	public void run() {
+		System.out.println("[DiscordAnnouncer] - Started.");
 		while (!this.isInterrupted()) {
 			try {
-				for (DiscordWebhook curWebhook : webhookList)
+				for (DiscordWebhook curWebhook : webhookList) {
 					curWebhook.execute();
+					webhookList.remove(curWebhook);
+					sleep(334);
+				}
 				sleep(334);
 			} catch (Exception ex) {
-//				Disco
+				error("Something happened while attempting to send a discord message!");
+				ex.printStackTrace();
 			}
 		}
 	}
@@ -31,7 +36,7 @@ public class DiscordAnnouncer extends Thread {
 			final DiscordWebhook webhook = new DiscordWebhook(DiscordChannel.ADMIN_ERRORS.channel);
 			webhook.setUsername("Error");
 			webhook.setContent(DiscordChannel.ADMIN_ERRORS.role + " - " + errorMessage);
-			webhook.execute();
+			webhookList.add(webhook);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

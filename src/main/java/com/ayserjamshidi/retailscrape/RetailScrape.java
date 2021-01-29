@@ -3,6 +3,7 @@ package com.ayserjamshidi.retailscrape;
 import com.ayserjamshidi.retailscrape.ThreadList.GeneralTrackingList;
 import com.ayserjamshidi.retailscrape.addons.discord.DiscordAnnounce;
 import com.ayserjamshidi.retailscrape.addons.proxything.AcquireProxyList;
+import com.ayserjamshidi.retailscrape.threads.DiscordAnnouncer;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -41,8 +42,6 @@ public class RetailScrape {
 					case "-test":
 						Collections.addAll(itemSearchList, trackingList.getNewegg());
 
-//						Collections.addAll(itemSearchList, trackingList.getNewegg());
-
 //						Collections.addAll(itemSearchList, new GeneralTrackingList().getTesting());
 //						System.out.println("TEST MODE!!!  NO PARAMETERS FOUND!");
 ////						Collections.addAll(itemSearchList, trackingList.getTesting());
@@ -64,12 +63,6 @@ public class RetailScrape {
 			System.out.println("Starting thread: " + curThread.getName());
 			curThread.setDaemon(false);
 			curThread.start();
-
-			try {
-				Thread.sleep(500);
-			} catch (Exception ex) {
-				ex.printStackTrace();
-			}
 		}
 
 		System.out.println("Finished thread creation, time to stay looping!");
@@ -82,6 +75,8 @@ public class RetailScrape {
 				e.printStackTrace();
 			}
 		}
+
+		new DiscordAnnouncer().start(); // Announcer thread
 
 		// Start infinitely scanning
 		while (true) {
@@ -96,5 +91,7 @@ public class RetailScrape {
 				e.printStackTrace();
 			}
 		}
+
+
 	}
 }

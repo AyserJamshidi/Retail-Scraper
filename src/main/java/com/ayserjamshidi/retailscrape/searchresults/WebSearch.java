@@ -26,14 +26,14 @@ public class WebSearch extends Thread {
 	final int MAX_WAIT_SECONDS;
 
 	// Dynamics
-	int amountOfCombosAnnounced;
-	long comboTimeLimit;
-	HashMap<String, Long> announcedItems;
+	int amountOfCombosAnnounced = 0;
+	long comboTimeLimit = 0;
+	HashMap<String, Long> announcedItems = new HashMap<>();
 	DiscordChannel discordChannel;
 	By itemSearchTerm;
-	private long lastComplaint;
+	private long lastComplaint = 0;
 	String[] pageUrls;
-	String lastAnnouncedItem;
+	String lastAnnouncedItem = "";
 
 	// Prevents spam announcing if item is always cart-able
 	HashMap<String, Long> addToCartFound;
@@ -46,12 +46,6 @@ public class WebSearch extends Thread {
 	long lastGoodLoad = System.currentTimeMillis(); // Current time because if set to 0, would be pretty weird
 
 	public WebSearch(final String threadName, final DiscordChannel discordChannel, final int MIN_WAIT_SECONDS, final int MAX_WAIT_SECONDS, final String[] pageUrls, final By itemSearchTerm) {
-		this.amountOfCombosAnnounced = 0;
-		this.comboTimeLimit = 0;
-		this.announcedItems = new HashMap<>();
-		this.discordChannel = null;
-		this.lastComplaint = 0;
-		this.lastAnnouncedItem = "";
 		this.setName(threadName);
 		sendMessage("Initializing");
 
@@ -158,7 +152,6 @@ public class WebSearch extends Thread {
 
 	protected boolean itemIsValid(final WebElement element) throws Exception {
 		return true;
-		//throw new Exception("[" + this.getName() + "] - itemIsGood is not overridden.");
 	}
 
 	protected boolean pageReloaded() {
