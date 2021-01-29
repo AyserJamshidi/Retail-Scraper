@@ -89,11 +89,10 @@ public class RetailScrape {
 				DiscordAnnounce.error("A thread has died! Please restart the program ASAP!");
 
 			try {
-				Thread.sleep(60000 * 5); // Every 5 minutes
-				System.out.println("Refreshing proxy list...");
-				proxyList = new AcquireProxyList().retrieveProxyList();
-				System.out.println("Refreshed!");
+
+				Thread.sleep(500);
 			} catch (InterruptedException e) {
+				DiscordAnnounce.error("An error occurred while attempting to send a message to discord");
 				e.printStackTrace();
 			}
 		}

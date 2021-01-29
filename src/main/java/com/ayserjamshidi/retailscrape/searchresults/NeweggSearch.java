@@ -12,7 +12,7 @@ import org.openqa.selenium.WebElement;
 public class NeweggSearch extends WebSearch {
 
 	public NeweggSearch(final String threadName, final DiscordChannel discordChannel, final String[] pageUrl) {
-		super(threadName, discordChannel, 10, 15, pageUrl, By.className("item-cell"));
+		super(threadName, discordChannel, 5, 10, pageUrl, By.className("item-cell"));
 	}
 
 	@Override
@@ -110,24 +110,10 @@ public class NeweggSearch extends WebSearch {
 
 			driver = new ChromeDriver(options);
 			driver.manage().window().setSize(new Dimension(180, 180));*/
-
-			//((HtmlUnitDriver) driver).setProxySettings(proxy);
-//			sendMessage("Using index " + RetailScrape.proxyIndex + ", proxy " + proxy.getHttpProxy());
 		} else {
 			sendMessage("Can't setup proxy, we're out!");
 		}
 	}
-
-//	@Override
-//	protected void reloadPage(String currentUrl) {
-//		if (pageReloaded()) {
-//
-//		} else {
-//			driver.get("https://www.proxysite.com/");
-//			WebElement enterUrl = driver.findElement(By.name("d"));
-//			enterUrl.sendKeys("Hi!");
-//		}
-//	}
 
 	@Override
 	protected boolean pageReloaded() {
@@ -141,16 +127,16 @@ public class NeweggSearch extends WebSearch {
 		String outputMessage = null;
 
 		if (loweredTitle.contains("are you a human?")) {
-			if (System.currentTimeMillis() - lastGoodLoad >= 5 * 60000) {
-				hasntComplainedYet = true;
-				lastGoodLoad = System.currentTimeMillis();
+//			if (System.currentTimeMillis() - lastGoodLoad >= 3 * 60000) {
+//				hasntComplainedYet = true;
+//				lastGoodLoad = System.currentTimeMillis();
 				setupProxy();
 				sendMessage("IP has changed to " + proxy.getHttpProxy());
 
-			}/* else if (System.currentTimeMillis() - lastGoodLoad >= 3 * 60000 && hasntComplainedYet) {
+//			}/* else if (System.currentTimeMillis() - lastGoodLoad >= 3 * 60000 && hasntComplainedYet) {
 				hasntComplainedYet = false;
 				DiscordAnnounce.error("[" + this.getName() + "] - Bot detection triggered...  Might change IP in 2 minutes.");
-			}*/
+//			}*/
 		} else if (loweredTitle.contains("403 error")) {
 			outputMessage = "IP banned. Change VPN source!";
 		} else {

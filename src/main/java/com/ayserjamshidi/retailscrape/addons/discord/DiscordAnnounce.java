@@ -1,5 +1,6 @@
 package com.ayserjamshidi.retailscrape.addons.discord;
 
+import com.ayserjamshidi.retailscrape.Configuration;
 import com.ayserjamshidi.retailscrape.searchresults.itemtemplate.TemplateSearchItem;
 
 import java.util.List;
@@ -11,7 +12,12 @@ public class DiscordAnnounce {
 	public static void announce(final DiscordChannel discordChannel, List<TemplateSearchItem> itemList, boolean isComboList) {
 		TemplateSearchItem lastItem = null;
 		try {
-			final DiscordWebhook webhook = new DiscordWebhook(isComboList ? discordChannel.comboChannel : discordChannel.normalChannel);
+			final DiscordWebhook webhook;
+
+			if (Configuration.TEST_MODE)
+				webhook = new DiscordWebhook(DiscordChannel.ADMIN_ERRORS.channel);
+			else
+				webhook = new DiscordWebhook(isComboList ? DiscordChannel.COMBO_USA.channel : discordChannel.channel);
 			webhook.setUsername("Ace");
 			webhook.setAvatarUrl("https://i.imgur.com/wTwIARf.png");
 			webhook.setContent(discordChannel.role + " - (" + (itemList.size() >= 10 ? "10" : itemList.size()) + ")");
@@ -69,7 +75,7 @@ public class DiscordAnnounce {
 
 	public static void error(final String errorMessage) {
 		try {
-			final DiscordWebhook webhook = new DiscordWebhook(DiscordChannel.ADMIN_ERRORS.normalChannel);
+			final DiscordWebhook webhook = new DiscordWebhook(DiscordChannel.ADMIN_ERRORS.channel);
 			webhook.setUsername("Error");
 			webhook.setContent(DiscordChannel.ADMIN_ERRORS.role + " - " + errorMessage);
 			webhook.execute();

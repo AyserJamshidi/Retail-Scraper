@@ -35,6 +35,9 @@ public class WebSearch extends Thread {
 	String[] pageUrls;
 	String lastAnnouncedItem;
 
+	// Prevents spam announcing if item is always cart-able
+	HashMap<String, Long> addToCartFound;
+
 	// Driver setup
 	WebDriver driver;
 	Proxy proxy;
