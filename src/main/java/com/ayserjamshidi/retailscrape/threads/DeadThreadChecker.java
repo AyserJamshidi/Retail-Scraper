@@ -1,7 +1,5 @@
 package com.ayserjamshidi.retailscrape.threads;
 
-import com.ayserjamshidi.retailscrape.addons.discord.DiscordAnnounce;
-
 public class DeadThreadChecker extends Thread {
 
 	private final ThreadGroup allThreads;
@@ -14,16 +12,17 @@ public class DeadThreadChecker extends Thread {
 
 	@Override
 	public void run() {
-		while (!this.isInterrupted()) {
-			try {
-				if (allThreads.activeCount() < itemSize)
-					DiscordAnnounce.error("A thread has died! Please restart the program ASAP!");
-
-				Thread.sleep(2000);
-			} catch (InterruptedException e) {
-				DiscordAnnounce.error("An error occurred while attempting to send a message to discord");
-				e.printStackTrace();
-			}
-		}
+//		while (!this.isInterrupted()) {
+//			try {
+//				if (allThreads.activeCount() < itemSize)
+//					System.out.println("Something's wrong with DeadThreadChecker");
+////					DiscordAnnouncer.queueError("A thread has died! Please restart the program ASAP!");
+//
+//				Thread.sleep(2000);
+//			} catch (InterruptedException e) {
+//				DiscordAnnouncer.queueError("An error occurred while attempting to send a message to discord");
+//				e.printStackTrace();
+//			}
+//		}
 	}
 }

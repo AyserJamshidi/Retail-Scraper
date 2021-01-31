@@ -10,17 +10,23 @@ import java.util.List;
 import java.util.*;
 
 public class DiscordWebhook {
-	private final String url;
+	private String url;
 	private String content;
 	private String username;
 	private String avatarUrl;
 	private boolean tts;
 	private final List<EmbedObject> embeds;
 
+	public DiscordWebhook() {
+		this(null);
+	}
+
 	public DiscordWebhook(final String url) {
 		this.embeds = new ArrayList<>();
 		this.url = url;
 	}
+
+	public void setUrl(final String url) { this.url = url; }
 
 	public void setContent(final String content) {
 		this.content = content;
@@ -40,6 +46,13 @@ public class DiscordWebhook {
 
 	public void addEmbed(final EmbedObject embed) {
 		this.embeds.add(embed);
+	}
+
+	public List<EmbedObject> getEmbeds() { return this.embeds; }
+
+	public void resetEmbeds() {
+		while (!this.embeds.isEmpty())
+			embeds.remove(0);
 	}
 
 	public void execute() throws IOException {
@@ -332,7 +345,7 @@ public class DiscordWebhook {
 				final Object val = entry.getValue();
 				builder.append(this.quote(entry.getKey())).append(":");
 
-				switch (val.getClass().getSimpleName()) {
+				/*switch (val.getClass().getSimpleName()) {
 					case "String":
 						builder.append(this.quote(String.valueOf(val)));
 						break;
@@ -356,9 +369,9 @@ public class DiscordWebhook {
 							builder.append("]");
 						}
 						break;
-				}
+				}*/
 
-				/*if (val instanceof String) {
+				if (val instanceof String) {
 					builder.append(this.quote(String.valueOf(val)));
 				} else if (val instanceof Integer) {
 					builder.append(Integer.valueOf(String.valueOf(val)));
@@ -372,7 +385,7 @@ public class DiscordWebhook {
 						builder.append(Array.get(val, j).toString()).append((j != len - 1) ? "," : "");
 					}
 					builder.append("]");
-				}*/
+				}
 
 				builder.append((++i == entrySet.size()) ? "}" : ",");
 			}

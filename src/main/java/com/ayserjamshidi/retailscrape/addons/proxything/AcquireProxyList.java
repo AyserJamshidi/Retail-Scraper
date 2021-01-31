@@ -13,16 +13,17 @@ import java.util.List;
 
 public class AcquireProxyList {
 	private final String USER_AGENT = "Mozilla/5.0";
-		private final String GET_URL = "https://proxy.webshare.io/api/proxy/list/";
-//	private final String GET_URL = "http://api.mudfish.net/graphql?query=%7B%0A%09user%20%7B%0A%09%09vNodeStatuses%20%7B%0A%09%09%09vid%0A%09%09%09location%0A%09%09%09rttavg%0A%09%09%09rttstd%0A%09%09%7D%0A%09%7D%0A%7D";
-	private final String GET_URL2 = "http://api.mudfish.net/graphql?query=%7B%0A%09user%20%7B%0A%09%09vNodeStatuses%20%7B%0A%09%09%09vid%0A%09%09%09location%0A%09%09%7D%0A%09%7D%0A%7D";
+	private final String GET_URL = "https://proxy.webshare.io";
+	private String URL_EXTENSION = "/api/proxy/list/?page=1";
 	private final String API_KEY = "691a70280566a3162d755135363409dd32f039d3";
+	//	private final String GET_URL = "http://api.mudfish.net/graphql?query=%7B%0A%09user%20%7B%0A%09%09vNodeStatuses%20%7B%0A%09%09%09vid%0A%09%09%09location%0A%09%09%09rttavg%0A%09%09%09rttstd%0A%09%09%7D%0A%09%7D%0A%7D";
+	private final String GET_URL2 = "http://api.mudfish.net/graphql?query=%7B%0A%09user%20%7B%0A%09%09vNodeStatuses%20%7B%0A%09%09%09vid%0A%09%09%09location%0A%09%09%7D%0A%09%7D%0A%7D";
 
 	public List<String> retrieveProxyList() {
 		List<String> outputList = new ArrayList<>();
 		String proxyList = requestProxyList();
 
-		if (proxyList != null) {
+		while (URL_EXTENSION != null && proxyList != null) {
 			JsonObject json = new JsonParser().parse(proxyList).getAsJsonObject();
 
 			for (JsonElement curElement : json.getAsJsonArray("results")) {
@@ -30,16 +31,22 @@ public class AcquireProxyList {
 				outputList.add(curJson.get("proxy_address").toString().replace("\"", "")
 						+ ":" + curJson.getAsJsonObject("ports").get("http"));
 			}
-		}
 
-//		System.out.println(outputList.toString());
+			JsonElement nextObject = json.get("next");
+
+			if (!nextObject.isJsonNull()) {
+				URL_EXTENSION = nextObject.getAsString();
+				proxyList = requestProxyList();
+			} else
+				URL_EXTENSION = null;
+		}
 
 		return outputList;
 	}
 
 	private String requestProxyList() {
 		try {
-			URL obj = new URL(GET_URL);
+			URL obj = new URL(GET_URL + URL_EXTENSION);
 			HttpURLConnection con = (HttpURLConnection) obj.openConnection();
 			con.setRequestMethod("GET");
 			con.setRequestProperty("Authorization", "Token " + API_KEY);
@@ -60,14 +67,14 @@ public class AcquireProxyList {
 				return response.toString();
 			}
 		} catch (Exception ex) {
-			System.out.println("An error occurred while attempting to request a proxy list!");
+			System.out.println("Error while attempting to query Webshare for proxy list:");
 			ex.printStackTrace();
 		}
 
 		return null;
 	}
 
-	public String requestProxyListv2() {
+	/*public String requestProxyListv2() {
 		try {
 			URL obj = new URL(GET_URL2);
 			HttpURLConnection con = (HttpURLConnection) obj.openConnection();
@@ -98,5 +105,5 @@ public class AcquireProxyList {
 		}
 
 		return null;
-	}
+	}*/
 }

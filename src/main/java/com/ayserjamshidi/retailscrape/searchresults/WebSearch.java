@@ -1,11 +1,12 @@
 package com.ayserjamshidi.retailscrape.searchresults;
 
-import com.ayserjamshidi.retailscrape.addons.discord.DiscordAnnounce;
+import com.ayserjamshidi.retailscrape.ThreadList.AmazonTrackingList;
 import com.ayserjamshidi.retailscrape.addons.discord.DiscordChannel;
 import com.ayserjamshidi.retailscrape.searchresults.itemtemplate.AmazonSearchItem;
 import com.ayserjamshidi.retailscrape.searchresults.itemtemplate.BestBuySearchItem;
 import com.ayserjamshidi.retailscrape.searchresults.itemtemplate.NeweggSearchItem;
 import com.ayserjamshidi.retailscrape.searchresults.itemtemplate.TemplateSearchItem;
+import com.ayserjamshidi.retailscrape.threads.DiscordAnnouncer;
 import org.openqa.selenium.*;
 
 import java.util.ArrayList;
@@ -42,10 +43,14 @@ public class WebSearch extends Thread {
 	WebDriver driver;
 	Proxy proxy;
 
+	// Special variables for Amazon
+	AmazonTrackingList amazonItemDetails;
+
 	// Prevents us from switching proxies too quickly
 	long lastGoodLoad = System.currentTimeMillis(); // Current time because if set to 0, would be pretty weird
 
-	public WebSearch(final String threadName, final DiscordChannel discordChannel, final int MIN_WAIT_SECONDS, final int MAX_WAIT_SECONDS, final String[] pageUrls, final By itemSearchTerm) {
+	public WebSearch(final String threadName, final DiscordChannel discordChannel, final int MIN_WAIT_SECONDS,
+	                 final int MAX_WAIT_SECONDS, final String[] pageUrls, final By itemSearchTerm) {
 		this.setName(threadName);
 		sendMessage("Initializing");
 
@@ -72,19 +77,18 @@ public class WebSearch extends Thread {
 					if (pageReloaded()) {
 						lastGoodLoad = System.currentTimeMillis();
 						for (final WebElement curPossibleItem : driver.findElements(itemSearchTerm)) {
-
 							if (!itemIsValid(curPossibleItem))
 								continue;
 
 							final TemplateSearchItem currentItem = itemCreator(curPossibleItem);
 
 							if (itemIsAvailable(currentItem)) {
-								if (itemIsCombo(currentItem)) {
+								if (currentItem.isCombo) {//itemIsCombo(currentItem)) {
 									if (System.currentTimeMillis() - comboTimeLimit < minutes(15))
 										continue;
 
-									if (comboItemList.size() >= 10)
-										continue;
+//									if (comboItemList.size() >= 10)
+//										continue;
 
 									if (amountOfCombosAnnounced >= 2) {
 										comboTimeLimit = System.currentTimeMillis();
@@ -105,8 +109,8 @@ public class WebSearch extends Thread {
 									comboItemList.add(currentItem);
 									amountOfCombosAnnounced++;
 								} else {
-									if (normalItemList.size() >= 10)
-										continue;
+//									if (normalItemList.size() >= 10)
+//										continue;
 
 									normalItemList.add(currentItem);
 								}
@@ -119,18 +123,18 @@ public class WebSearch extends Thread {
 
 						// Wipe both lists so we don't spam announce
 						if (normalItemList.size() > 0) {
-							DiscordAnnounce.announce(discordChannel, normalItemList, false);
+							DiscordAnnouncer.queueAnnounce(discordChannel, normalItemList);
 							normalItemList.clear();
 						}
 						if (comboItemList.size() > 0) {
-							DiscordAnnounce.announce(discordChannel, comboItemList, true);
+//							DiscordAnnouncer.queueAnnounce(discordChannel, comboItemList);
 							comboItemList.clear();
 						}
 
-					} else if (canComplain()) {
+					} else if (true) {//canComplain()) {
 						sendMessage("Complaining time");
-//						System.out.println("== " + driver.getTitle() + "\n" + driver.getPageSource());
 						badPageReload();
+						continue;
 					}
 				} catch (Exception ex) {
 					ex.printStackTrace();
@@ -140,15 +144,15 @@ public class WebSearch extends Thread {
 			}
 		}
 
-		DiscordAnnounce.error("[" + this.getName() + "] - Thread has crashed for some unknown reason. Restart the bot!");
+		DiscordAnnouncer.queueError("[" + this.getName() + "] - Thread has crashed for some unknown reason. Restart the bot!");
 	}
 
 	protected void afterLoadTasks() {
 	}
 
-	protected boolean itemIsCombo(final Object obj) {
+	/*protected boolean itemIsCombo(final TemplateSearchItem obj) {
 		return false;
-	}
+	}*/
 
 	protected boolean itemIsValid(final WebElement element) throws Exception {
 		return true;
@@ -189,7 +193,7 @@ public class WebSearch extends Thread {
 			case "BestBuySearch":
 				return new BestBuySearchItem(curPossibleItem);
 			case "AmazonSearch":
-				return new AmazonSearchItem(curPossibleItem);
+				return new AmazonSearchItem(curPossibleItem, amazonItemDetails);
 			default:
 				return null;
 		}
@@ -219,7 +223,7 @@ public class WebSearch extends Thread {
 				break;
 			} catch (WebDriverException ex) {
 				ex.printStackTrace();
-				DiscordAnnounce.error("[" + this.getName() + "] - Tried loading the assigned URL but caught an exception.");
+				DiscordAnnouncer.queueError("[" + this.getName() + "] - Tried loading the assigned URL but caught an exception.");
 			}
 	}
 
@@ -227,7 +231,7 @@ public class WebSearch extends Thread {
 		if (!announcedItems.containsKey(itemName))
 			return true;
 
-		if (lastAnnouncedItem.equals(itemName))
+		if (lastAnnouncedItem != null && lastAnnouncedItem.equals(itemName))
 			return System.currentTimeMillis() - announcedItems.get(itemName) > minutes(SAME_ITEM_WAIT_MINUTES);
 
 		return System.currentTimeMillis() - announcedItems.get(itemName) > minutes(GENERAL_WAIT_MINUTES);

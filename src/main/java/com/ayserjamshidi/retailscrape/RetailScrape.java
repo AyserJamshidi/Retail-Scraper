@@ -1,8 +1,8 @@
 package com.ayserjamshidi.retailscrape;
 
 import com.ayserjamshidi.retailscrape.ThreadList.GeneralTrackingList;
-import com.ayserjamshidi.retailscrape.addons.discord.DiscordAnnounce;
 import com.ayserjamshidi.retailscrape.addons.proxything.AcquireProxyList;
+import com.ayserjamshidi.retailscrape.threads.DeadThreadChecker;
 import com.ayserjamshidi.retailscrape.threads.DiscordAnnouncer;
 
 import java.util.ArrayList;
@@ -15,6 +15,10 @@ public class RetailScrape {
 	public static int proxyIndex = 0;
 
 	public static void main(final String[] args) {
+//		if (true) {
+//			DiscordSenderTrash.send();
+//			System.exit(0);
+//		}
 		System.out.print("Setting global proxy list...  ");
 		proxyList.addAll(new AcquireProxyList().retrieveProxyList());
 		Collections.shuffle(proxyList);
@@ -30,20 +34,21 @@ public class RetailScrape {
 
 			for (String arg : args)
 				switch (arg.toLowerCase()) {
-					case "-newegg":
-						Collections.addAll(itemSearchList, trackingList.getNewegg());
+					case "-newegg_usa":
+						Collections.addAll(itemSearchList, trackingList.getNeweggUSA());
 						break;
-					case "-bestbuy":
-						Collections.addAll(itemSearchList, trackingList.getBestBuy());
+					case "-bestbuy_usa":
+						Collections.addAll(itemSearchList, trackingList.getBestBuyUSA());
 						break;
-					case "-amazon":
-//						Collections.addAll(itemSearchList, );
+					case "-amazon_usa":
+						Collections.addAll(itemSearchList, trackingList.getAmazonUSA());
+						break;
+					case "-newegg_ca":
+						Collections.addAll(itemSearchList, trackingList.getNeweggCA());
 						break;
 					case "-test":
-						Collections.addAll(itemSearchList, trackingList.getNewegg());
-
-//						Collections.addAll(itemSearchList, new GeneralTrackingList().getTesting());
-//						System.out.println("TEST MODE!!!  NO PARAMETERS FOUND!");
+						Configuration.TEST_MODE = true;
+						Collections.addAll(itemSearchList, trackingList.getNeweggCA());
 ////						Collections.addAll(itemSearchList, trackingList.getTesting());
 //						HTMLUnitTest thingy = new HTMLUnitTest("Tester Thread",
 //								DiscordChannel.ADMIN_ERRORS, 2, 4,
@@ -68,30 +73,16 @@ public class RetailScrape {
 		System.out.println("Finished thread creation, time to stay looping!");
 
 		// Wait for everything to start before scanning
-		while (allThreads.activeCount() != itemSearchList.size()) {
+		/*while (allThreads.activeCount() != itemSearchList.size()) {
 			try {
+				System.out.println("Still inside... activeCount == " + allThreads.activeCount() + " | size == " + itemSearchList.size());
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-		}
+		}*/
 
-		new DiscordAnnouncer().start(); // Announcer thread
-
-		// Start infinitely scanning
-		while (true) {
-			if (allThreads.activeCount() < itemSearchList.size())
-				DiscordAnnounce.error("A thread has died! Please restart the program ASAP!");
-
-			try {
-
-				Thread.sleep(500);
-			} catch (InterruptedException e) {
-				DiscordAnnounce.error("An error occurred while attempting to send a message to discord");
-				e.printStackTrace();
-			}
-		}
-
-
+		new DiscordAnnouncer().start();
+		new DeadThreadChecker(allThreads, itemSearchList.size()).start();
 	}
 }

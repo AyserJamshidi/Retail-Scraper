@@ -8,11 +8,23 @@ public class NeweggSearchItem extends TemplateSearchItem {
 	public String messageInformation;
 
 	public NeweggSearchItem(final WebElement searchedItem) {
-		this.addToCartUrl = "https://secure.newegg.com/Shopping/AddtoCart.aspx?Submit=ADD&ItemList=";
 		final WebElement itemTitle = searchedItem.findElement(By.className("item-title"));
 		final WebElement itemAction = searchedItem.findElement(By.className("item-action"));
 
 		this.itemUrl = itemTitle.getAttribute("href").replace(" ", "%20");
+
+//		this.addToCartUrl = "https://secure.newegg.com/Shopping/AddtoCart.aspx?Submit=ADD&ItemList=";
+
+		if (this.itemUrl.contains("newegg.ca")) {
+			this.addToCartUrl = "https://secure.newegg.ca/Shopping/AddtoCart.aspx?Submit=ADD&ItemList=";
+		} else if (this.itemUrl.contains("/global/uk-en/")) {
+			this.addToCartUrl = "https://secure.newegg.com/global/uk-en/Shopping/AddtoCart.aspx?Submit=ADD&ItemList=";
+		} else {
+			this.addToCartUrl = "https://secure.newegg.com/Shopping/AddtoCart.aspx?Submit=ADD&ItemList=";
+		}
+
+//		this.addToCartUrl = this.itemUrl.substring(0, this.itemUrl.inde("/p/")) + "/Shopping/AddtoCart.aspx?Submit=ADD&ItemList=";
+
 		this.isCombo = this.itemUrl.contains("ComboDealDetails");
 		this.imageUrl = searchedItem.findElement(By.cssSelector(".item-img img")).getAttribute("src").replace(" ", "%20");
 		this.itemName = itemTitle.getText();

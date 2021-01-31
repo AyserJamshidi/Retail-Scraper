@@ -1,10 +1,10 @@
 package com.ayserjamshidi.retailscrape.searchresults;
 
 import com.ayserjamshidi.retailscrape.RetailScrape;
-import com.ayserjamshidi.retailscrape.addons.discord.DiscordAnnounce;
 import com.ayserjamshidi.retailscrape.addons.discord.DiscordChannel;
 import com.ayserjamshidi.retailscrape.drivers.HtmlUnitDriverErrorless;
-import com.ayserjamshidi.retailscrape.searchresults.itemtemplate.NeweggSearchItem;
+import com.ayserjamshidi.retailscrape.searchresults.itemtemplate.TemplateSearchItem;
+import com.ayserjamshidi.retailscrape.threads.DiscordAnnouncer;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebElement;
@@ -28,23 +28,20 @@ public class NeweggSearch extends WebSearch {
 		super.run();
 	}
 
-	@Override
-	protected boolean itemIsCombo(final Object obj) {
-		return ((NeweggSearchItem) obj).itemUrl.contains("ComboDealDetails");
-	}
+	/*@Override
+	protected boolean itemIsCombo(final TemplateSearchItem searchedItem) {
+		return searchedItem.itemUrl.contains("ComboDealDetails");
+	}*/
 
 	@Override
 	protected boolean itemIsValid(final WebElement cell) {
-		/*String[] blacklistedItems = {
-				"RTX3090-O24G-GAMING",
-				"ZT-A30900D-10P",
-				"RTX 3070 SUPRIM 8G",
-				"UF-RTX3070-O8G-GAMING"
+		String[] blacklistedItems = {
+				"RX6900XT PGD 16GO"
 		};
 
 		for (String curBlacklistItem : blacklistedItems)
 			if (cell.getText().contains(curBlacklistItem))
-				return false;*/
+				return false;
 
 		/*String[] whitelistAvailability = {
 				// 3060ti
@@ -91,6 +88,7 @@ public class NeweggSearch extends WebSearch {
 
 			((HtmlUnitDriverErrorless) driver).setProxySettings(proxy);
 
+			sendMessage("IP is now " + proxy.getHttpProxy());
 			// Chrome shit
 			/*
 			if (driver != null)
@@ -120,23 +118,19 @@ public class NeweggSearch extends WebSearch {
 		return driver.getPageSource().toLowerCase().contains("shipped by newegg");
 	}
 
-	boolean hasntComplainedYet = true;
 	@Override
 	protected void badPageReload() {
 		final String loweredTitle = driver.getTitle().toLowerCase();
 		String outputMessage = null;
 
-		if (loweredTitle.contains("are you a human?")) {
+		if (loweredTitle.contains("are you a human")) {
 //			if (System.currentTimeMillis() - lastGoodLoad >= 3 * 60000) {
 //				hasntComplainedYet = true;
 //				lastGoodLoad = System.currentTimeMillis();
-				setupProxy();
-				sendMessage("IP has changed to " + proxy.getHttpProxy());
+			setupProxy();
+			sendMessage("IP has changed to " + proxy.getHttpProxy());
 
-//			}/* else if (System.currentTimeMillis() - lastGoodLoad >= 3 * 60000 && hasntComplainedYet) {
-				hasntComplainedYet = false;
-				DiscordAnnounce.error("[" + this.getName() + "] - Bot detection triggered...  Might change IP in 2 minutes.");
-//			}*/
+//			DiscordAnnouncer.queueError("[" + this.getName() + "] - Bot detection triggered...  Changing IP.");
 		} else if (loweredTitle.contains("403 error")) {
 			outputMessage = "IP banned. Change VPN source!";
 		} else {
@@ -144,6 +138,6 @@ public class NeweggSearch extends WebSearch {
 		}
 
 		if (outputMessage != null)
-			DiscordAnnounce.error("[" + this.getName() + "] - " + outputMessage);
+			DiscordAnnouncer.queueError("[" + this.getName() + "] - " + outputMessage);
 	}
 }
