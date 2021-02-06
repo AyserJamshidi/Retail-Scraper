@@ -87,41 +87,41 @@ class NeweggListCA {
 	public Thread[] threads = {
 			//Nvidia GPU
 			new NeweggSearch("Nvidia 3090 - Newegg Canada", DiscordChannel.NVIDIA_3090_CA, new String[]{
-					"https://www.newegg.ca/p/pl?d=RTX+3090+GPU&N=4814%208000&Order=2&PageSize=96"
+					"https://www.newegg.ca/p/pl?d=RTX+3090+GPU&N=4814%208000%20100007708&Order=2&PageSize=96"
 			}),
 			new NeweggSearch("Nvidia 3080 - Newegg Canada", DiscordChannel.NVIDIA_3080_CA, new String[]{
-					"https://www.newegg.ca/p/pl?d=RTX+3080+GPU&N=4814%208000&Order=2&PageSize=96"
+					"https://www.newegg.ca/p/pl?d=RTX+3080+GPU&N=4814%208000%20100007708&Order=2&PageSize=96"
 			}),
 			new NeweggSearch("Nvidia 3070 - Newegg Canada", DiscordChannel.NVIDIA_3070_CA, new String[]{
-					"https://www.newegg.ca/p/pl?d=RTX+3070+GPU&N=4814%208000&Order=2&PageSize=96"
+					"https://www.newegg.ca/p/pl?d=RTX+3070+GPU&N=4814%208000%20100007708&Order=2&PageSize=96"
 			}),
 			new NeweggSearch("Nvidia 3060ti - Newegg Canada", DiscordChannel.NVIDIA_3060TI_CA, new String[]{
-					"https://www.newegg.ca/p/pl?d=RTX+3060TI+GPU&N=4814%208000&Order=2&PageSize=96"
+					"https://www.newegg.ca/p/pl?d=RTX+3060TI+GPU&N=4814%208000%20100007708&Order=2&PageSize=96"
 			}),
 
 			// AMD GPU
 			new NeweggSearch("AMD 6900XT - Newegg Canada", DiscordChannel.AMD_RX6900XT_CA, new String[]{
-					"https://www.newegg.ca/p/pl?d=6900XT+GPU&N=4814%208000&Order=2&PageSize=96"
+					"https://www.newegg.ca/p/pl?d=6900XT+GPU&N=4814%208000%20100007708&Order=2&PageSize=96"
 			}),
 			new NeweggSearch("AMD 6800XT - Newegg Canada", DiscordChannel.AMD_RX6800XT_CA, new String[]{
-					"https://www.newegg.ca/p/pl?d=6800XT+GPU&N=4814%208000&Order=2&PageSize=96"
+					"https://www.newegg.ca/p/pl?d=6800XT+GPU&N=4814%208000%20100007708&Order=2&PageSize=96"
 			}),
 			new NeweggSearch("AMD 6800 - Newegg Canada", DiscordChannel.AMD_RX6800_CA, new String[]{
-					"https://www.newegg.ca/p/pl?d=6800%20-XT+GPU&N=4814%208000&Order=2&PageSize=96"
+					"https://www.newegg.ca/p/pl?d=6800+-XT+GPU&N=4814%208000%20100007708&Order=2&PageSize=96"
 			}),
 
 			// AMD CPU
 			new NeweggSearch("AMD 5950X - Newegg Canada", DiscordChannel.AMD_5950x_CA, new String[]{
-					"https://www.newegg.ca/p/pl?d=100-100000059WOF&N=4814%208000&Order=2&PageSize=96"
+					"https://www.newegg.ca/p/pl?d=100-100000059WOF&N=4814%208000%20100007670&Order=2&PageSize=96"
 			}),
 			new NeweggSearch("AMD 5900X - Newegg Canada", DiscordChannel.AMD_5900x_CA, new String[]{
-					"https://www.newegg.ca/p/pl?d=100-100000061WOF&N=4814%208000&Order=2&PageSize=96"
+					"https://www.newegg.ca/p/pl?d=100-100000061WOF&N=4814%208000%20100007670&Order=2&PageSize=96"
 			}),
 			new NeweggSearch("AMD 5800X - Newegg Canada", DiscordChannel.AMD_5800x_CA, new String[]{
-					"https://www.newegg.ca/p/pl?d=100-100000063WOF&N=4814%208000&Order=2&PageSize=96"
+					"https://www.newegg.ca/p/pl?d=100-100000063WOF&N=4814%208000%20100007670&Order=2&PageSize=96"
 			}),
 			new NeweggSearch("AMD 5600X - Newegg Canada", DiscordChannel.AMD_5600x_CA, new String[]{
-					"https://www.newegg.ca/p/pl?d=100-100000065BOX&N=4814%208000&Order=2&PageSize=96"
+					"https://www.newegg.ca/p/pl?d=100-100000065BOX&N=4814%208000%20100007670&Order=2&PageSize=96"
 			}),
 	};
 }
@@ -214,10 +214,17 @@ class BestBuyListCA {
 
 class AmazonListUSA {
 	public Thread[] threads = {
-			new AmazonSearch("AMD 5950X - Amazon USA", DiscordChannel.AMD_5950x_USA, AmazonTrackingList.AMD_5950X),
-			new AmazonSearch("AMD 5900X - Amazon USA", DiscordChannel.AMD_5900x_USA, AmazonTrackingList.AMD_5900X),
-			new AmazonSearch("AMD 5800X - Amazon USA", DiscordChannel.AMD_5800x_USA, AmazonTrackingList.AMD_5800X),
-			new AmazonSearch("AMD 5600X - Amazon USA", DiscordChannel.AMD_5600x_USA, AmazonTrackingList.AMD_5600X),
+			// Nvidia GPU
+//			new AmazonSearch("ASUS TUF 3090 OC - Amazon USA", DiscordChannel.NVIDIA_3090_USA, AmazonTrackingListUSA.NVIDIA_3090_ASUS_TUF_OC_USA),
+//			new AmazonSearch("ASUS TUF 3070 OC- Amazon USA", DiscordChannel.NVIDIA_3070_USA, AmazonTrackingListUSA.NVIDIA_3070_ASUS_TUF_OC_USA),
+//			new AmazonSearch("ASUS TUF 3070 DUAL OC - Amazon USA", DiscordChannel.NVIDIA_3070_USA, AmazonTrackingListUSA.NVIDIA_3070_ASUS_DUAL_OC_USA),
+
+
+			// AMD CPU
+			new AmazonSearch("AMD 5950X - Amazon USA", DiscordChannel.AMD_5950x_USA, AmazonTrackingListUSA.AMD_5950X),
+			new AmazonSearch("AMD 5900X - Amazon USA", DiscordChannel.AMD_5900x_USA, AmazonTrackingListUSA.AMD_5900X),
+			new AmazonSearch("AMD 5800X - Amazon USA", DiscordChannel.AMD_5800x_USA, AmazonTrackingListUSA.AMD_5800X),
+			new AmazonSearch("AMD 5600X - Amazon USA", DiscordChannel.AMD_5600x_USA, AmazonTrackingListUSA.AMD_5600X),
 	};
 }
 
@@ -244,6 +251,6 @@ class TestingList {
 //			new BestBuySearch("AMD 5600X - BestBuy USA", DiscordChannel.ADMIN_ERRORS, new String[]{
 //					"https://www.bestbuy.com/site/searchpage.jsp?_dyncharset=UTF-8&id=pcat17071&iht=y&keys=keys&ks=960&list=n&qp=category_facet%3DCPUs%20%2F%20Processors~abcat0507010&sc=Global&st=5600x&type=page&usc=All%20Categories"
 //			}),
-			new AmazonSearch("AMD 5900X - Amazon USA", DiscordChannel.AMD_5600x_CA, AmazonTrackingList.AMD_5900X),
+			new AmazonSearch("SAMSUNG G9 - Amazon USA", DiscordChannel.ADMIN_ERRORS, AmazonTrackingListUSA.SAMSUNG_G9),
 	};
 }

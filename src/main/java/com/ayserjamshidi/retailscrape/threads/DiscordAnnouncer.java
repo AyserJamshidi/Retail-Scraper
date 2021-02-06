@@ -1,6 +1,6 @@
 package com.ayserjamshidi.retailscrape.threads;
 
-import com.ayserjamshidi.retailscrape.Configuration;
+import com.ayserjamshidi.retailscrape.RetailConfig;
 import com.ayserjamshidi.retailscrape.addons.discord.DiscordChannel;
 import com.ayserjamshidi.retailscrape.addons.discord.DiscordWebhook;
 import com.ayserjamshidi.retailscrape.searchresults.itemtemplate.TemplateSearchItem;
@@ -11,6 +11,7 @@ import java.util.List;
 public class DiscordAnnouncer extends Thread {
 	private final static String BOT_NAME = "Ace";
 	private final static String BOT_AVATAR_URL = "https://i.imgur.com/wTwIARf.png";
+
 	static String neweggLogoUrl = "https://www.parcl.com/files/blog/8%20Online%20Stores%20with%20Cheap%20Tech%20Goods/newegg-logo.png";
 	static String bestbuyLogoUrl = "https://pisces.bbystatic.com/image2/BestBuy_US/Gallery/BestBuy_Logo_2020-190616.png";
 
@@ -122,7 +123,7 @@ public class DiscordAnnouncer extends Thread {
 
 	private void queueRolePing(DiscordChannel discordChannel, int listSize, boolean isComboList) {
 		DiscordWebhook mainWebhook = setupWebhook(discordChannel, isComboList);
-		mainWebhook.setContent(discordChannel.role + " - " + listSize + " incoming!");
+		mainWebhook.setContent(discordChannel.role + " - " + listSize);
 //		webhookList.add(0, mainWebhook);
 		webhookList.add(mainWebhook);
 	}
@@ -130,7 +131,7 @@ public class DiscordAnnouncer extends Thread {
 	private DiscordWebhook setupWebhook(DiscordChannel discordChannel, boolean isComboList) {
 		DiscordWebhook outputWebhook = new DiscordWebhook();
 
-		if (Configuration.TEST_MODE)
+		if (RetailConfig.TEST_MODE)
 			outputWebhook.setUrl(DiscordChannel.ADMIN_ERRORS.channel);
 		else
 			outputWebhook.setUrl(discordChannel.channel);

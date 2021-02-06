@@ -1,11 +1,11 @@
 package com.ayserjamshidi.retailscrape.searchresults.itemtemplate;
 
-import com.ayserjamshidi.retailscrape.ThreadList.AmazonTrackingList;
+import com.ayserjamshidi.retailscrape.ThreadList.AmazonTrackingListUSA;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
 public class AmazonSearchItem extends TemplateSearchItem {
-	public AmazonSearchItem(final WebElement searchedItem, AmazonTrackingList trackedItem) {
+	public AmazonSearchItem(final WebElement searchedItem, AmazonTrackingListUSA trackedItem) {
 		itemName = trackedItem.itemName;
 		imageUrl = trackedItem.imageUrl;
 		itemUrl =  trackedItem.affiliateUrl;
@@ -16,7 +16,7 @@ public class AmazonSearchItem extends TemplateSearchItem {
 		WebElement shippingInformation = getFirstElement(searchedItem, By.className("olpShippingPrice"));
 		shippingCost = (shippingInformation != null) ? shippingInformation.getText() : "Free";
 		promotion = "The above are affiliate links. Thanks for supporting us!";
-//		itemButtonText = itemAction.findElement(By.className("item-button-area")).getText();
+		itemButtonText = searchedItem.findElement(By.name("submit.addToCart")).getText();
 //		promotion = getFirstElementText(searchedItem, By.className("item-promo"));
 //		messageInformation = getFirstElementText(searchedItem, By.className("message-wrapper"));
 

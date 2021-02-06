@@ -47,14 +47,12 @@ public class RetailScrape {
 						Collections.addAll(itemSearchList, trackingList.getNeweggCA());
 						break;
 					case "-test":
-						Configuration.TEST_MODE = true;
+						RetailConfig.TEST_MODE = true;
+						RetailConfig.OPEN_IN_BROWSER_MODE = true;
+						Collections.addAll(itemSearchList, trackingList.getAmazonUSA());
 						Collections.addAll(itemSearchList, trackingList.getNeweggCA());
-////						Collections.addAll(itemSearchList, trackingList.getTesting());
-//						HTMLUnitTest thingy = new HTMLUnitTest("Tester Thread",
-//								DiscordChannel.ADMIN_ERRORS, 2, 4,
-//						new String[] {"https://www.newegg.com/p/pl?d=3080+gpu"}, "//div[@class='item-cell']");
-//						thingy.init();
-//						thingy.start();
+						Collections.addAll(itemSearchList, trackingList.getBestBuyUSA());
+						Collections.addAll(itemSearchList, trackingList.getNeweggUSA());
 						break;
 				}
 		}
