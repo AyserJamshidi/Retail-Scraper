@@ -11,6 +11,12 @@ import org.openqa.selenium.WebElement;
 
 public class NeweggSearch extends WebSearch {
 
+	String[] blacklistedItems = {
+			"RX6900XT PGD 16GO",
+			"ZT-A30900D-10P",
+			"VCG309024TFXPPB"
+	};
+
 	public NeweggSearch(final String threadName, final DiscordChannel discordChannel, final String[] pageUrl) {
 		super(threadName, discordChannel, 5, 10, pageUrl, By.className("item-cell"));
 	}
@@ -35,10 +41,6 @@ public class NeweggSearch extends WebSearch {
 
 	@Override
 	protected boolean itemIsValid(final WebElement cell) {
-		String[] blacklistedItems = {
-				"RX6900XT PGD 16GO"
-		};
-
 		for (String curBlacklistItem : blacklistedItems)
 			if (cell.getText().contains(curBlacklistItem))
 				return false;

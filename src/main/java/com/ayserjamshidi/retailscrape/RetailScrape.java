@@ -46,9 +46,12 @@ public class RetailScrape {
 					case "-newegg_ca":
 						Collections.addAll(itemSearchList, trackingList.getNeweggCA());
 						break;
+					case "-personal":
+						RetailConfig.TEST_MODE = true;
+						break;
 					case "-test":
 						RetailConfig.TEST_MODE = true;
-						RetailConfig.OPEN_IN_BROWSER_MODE = true;
+//						RetailConfig.OPEN_IN_BROWSER_MODE = true;
 						Collections.addAll(itemSearchList, trackingList.getAmazonUSA());
 						Collections.addAll(itemSearchList, trackingList.getNeweggCA());
 						Collections.addAll(itemSearchList, trackingList.getBestBuyUSA());

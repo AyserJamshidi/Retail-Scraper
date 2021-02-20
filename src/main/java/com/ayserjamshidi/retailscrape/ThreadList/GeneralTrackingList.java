@@ -53,9 +53,9 @@ class NeweggListUSA {
 			}),
 
 			// AMD GPU
-			new NeweggSearch("AMD 6900XT - Newegg USA", DiscordChannel.AMD_RX6900XT_USA, new String[]{
-					"https://www.newegg.com/p/pl?d=6900xt%20GPU&N=8000%20100006662&PageSize=96&Order=2"
-			}),
+//			new NeweggSearch("AMD 6900XT - Newegg USA", DiscordChannel.AMD_RX6900XT_USA, new String[]{
+//					"https://www.newegg.com/p/pl?d=6900xt%20GPU&N=8000%20100006662&PageSize=96&Order=2"
+//			}),
 			new NeweggSearch("AMD 6800XT - Newegg USA", DiscordChannel.AMD_RX6800XT_USA, new String[]{
 					"https://www.newegg.com/p/pl?d=6800xt%20GPU&N=8000%20100006662&PageSize=96&Order=2"
 			}),
